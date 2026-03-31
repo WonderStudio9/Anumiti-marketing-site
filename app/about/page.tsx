@@ -15,6 +15,10 @@ import { FAQSection } from "@/components/marketing/faq-section";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { generatePageMetadata } from "@/lib/seo";
 import { CTA_URLS } from "@/lib/constants";
+import { ScrollReveal } from "@/components/animations/scroll-reveal";
+import { FloatingOrbs } from "@/components/animations/floating-orbs";
+import { AnimatedBeam } from "@/components/animations/animated-beam";
+import { AnimatedCounter } from "@/components/animations/animated-counter";
 
 export const metadata = generatePageMetadata({
   title: "About Anumiti — We Infer. We Verify. We Prove.",
@@ -119,215 +123,232 @@ export default function AboutPage() {
       </div>
 
       {/* Hero */}
-      <Section background="white">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal">
-            About Anumiti
-          </p>
-          <h1 className="text-balance text-4xl font-bold tracking-tight text-navy md:text-5xl">
-            We don&apos;t guess. We infer. We verify. We prove.
-          </h1>
-          <p className="mt-6 text-lg leading-relaxed text-gray-600 md:text-xl">
-            <span className="font-semibold text-navy">Anumiti (अनुमिति)</span> means{" "}
-            <em>knowledge through inference</em> in Nyaya philosophy — one of the six
-            classical schools of Indian thought. We apply this principle to compliance and
-            document intelligence: observe evidence, infer structure, verify truth, produce
-            proof.
-          </p>
+      <section className="bg-white py-24 md:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <ScrollReveal>
+              <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal">
+                About Anumiti
+              </p>
+              <h1 className="text-balance text-4xl font-bold tracking-tight text-navy md:text-5xl lg:text-6xl">
+                We don&apos;t guess. We infer. We verify. We prove.
+              </h1>
+            </ScrollReveal>
+            <ScrollReveal delay={0.15}>
+              <p className="mt-6 text-lg leading-relaxed text-gray-600 md:text-xl">
+                <span className="font-semibold text-navy">Anumiti (अनुमिति)</span> means{" "}
+                <em>knowledge through inference</em> in Nyaya philosophy — one of the six
+                classical schools of Indian thought. We apply this principle to compliance and
+                document intelligence: observe evidence, infer structure, verify truth, produce
+                proof.
+              </p>
+            </ScrollReveal>
+          </div>
         </div>
-      </Section>
+      </section>
+
+      {/* Animated Beam separator */}
+      <AnimatedBeam />
 
       {/* The Problem We Solve */}
-      <Section background="gray" id="problem">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold text-navy md:text-4xl">
-            What problem does Anumiti solve?
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            India faces two converging gaps that affect every business.
-          </p>
-        </div>
+      <Section background="gray" id="problem" className="py-24 md:py-32">
+        <ScrollReveal>
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+              What problem does Anumiti solve?
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              India faces two converging gaps that affect every business.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="mt-12 grid gap-8 md:grid-cols-2">
-          <div className="rounded-2xl border border-gray-200 bg-white p-8">
-            <h3 className="text-xl font-bold text-navy">The Compliance Gap</h3>
-            <p className="mt-3 text-gray-600">
-              63 million businesses must comply with the DPDP Act. Most have no privacy
-              infrastructure. Global tools like OneTrust are too expensive and too
-              GDPR-centric. Indian MSMEs need affordable, Hindi/regional-language-first
-              compliance tools that work on WhatsApp — not enterprise dashboards designed
-              for Fortune 500 companies.
-            </p>
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              <div className="rounded-lg bg-indigo-50 p-4 text-center">
-                <p className="text-2xl font-bold text-indigo">63M+</p>
-                <p className="text-xs text-gray-500">Businesses affected</p>
-              </div>
-              <div className="rounded-lg bg-indigo-50 p-4 text-center">
-                <p className="text-2xl font-bold text-indigo">₹250 Cr</p>
-                <p className="text-xs text-gray-500">Max fine per breach</p>
+          <ScrollReveal direction="left" delay={0.1}>
+            <div className="rounded-2xl border border-gray-200 bg-white p-8">
+              <h3 className="text-xl font-bold text-navy">The Compliance Gap</h3>
+              <p className="mt-3 text-gray-600">
+                63 million businesses must comply with the DPDP Act. Most have no privacy
+                infrastructure. Global tools like OneTrust are too expensive and too
+                GDPR-centric. Indian MSMEs need affordable, Hindi/regional-language-first
+                compliance tools that work on WhatsApp — not enterprise dashboards designed
+                for Fortune 500 companies.
+              </p>
+              <div className="mt-6 grid grid-cols-2 gap-4">
+                <AnimatedCounter value="63M+" label="Businesses affected" className="rounded-lg bg-indigo-50 p-4" />
+                <div className="rounded-lg bg-indigo-50 p-4 text-center">
+                  <div className="text-2xl font-bold text-indigo">₹250 Cr</div>
+                  <div className="mt-2 text-xs text-gray-500">Max fine per breach</div>
+                </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-8">
-            <h3 className="text-xl font-bold text-navy">The Document Intelligence Gap</h3>
-            <p className="mt-3 text-gray-600">
-              India generates billions of documents annually across 22 official languages.
-              GST invoices, PAN cards, court orders, bank statements — all processed
-              manually or with tools that fail on Indian scripts, layouts, and formats.
-              There is no reliable, affordable API for Indian document extraction and
-              verification.
-            </p>
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              <div className="rounded-lg bg-saffron-50 p-4 text-center">
-                <p className="text-2xl font-bold text-saffron">22</p>
-                <p className="text-xs text-gray-500">Official languages</p>
-              </div>
-              <div className="rounded-lg bg-saffron-50 p-4 text-center">
-                <p className="text-2xl font-bold text-saffron">50+</p>
-                <p className="text-xs text-gray-500">Document types supported</p>
+          <ScrollReveal direction="right" delay={0.1}>
+            <div className="rounded-2xl border border-gray-200 bg-white p-8">
+              <h3 className="text-xl font-bold text-navy">The Document Intelligence Gap</h3>
+              <p className="mt-3 text-gray-600">
+                India generates billions of documents annually across 22 official languages.
+                GST invoices, PAN cards, court orders, bank statements — all processed
+                manually or with tools that fail on Indian scripts, layouts, and formats.
+                There is no reliable, affordable API for Indian document extraction and
+                verification.
+              </p>
+              <div className="mt-6 grid grid-cols-2 gap-4">
+                <AnimatedCounter value="22" label="Official languages" className="rounded-lg bg-saffron-50 p-4" />
+                <AnimatedCounter value="50+" label="Document types supported" className="rounded-lg bg-saffron-50 p-4" />
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </Section>
 
       {/* Our Approach */}
-      <Section background="white" id="approach">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold text-navy md:text-4xl">
-            How does Anumiti approach this?
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            Three pillars rooted in the Nyaya inference model.
-          </p>
-        </div>
+      <Section background="white" id="approach" className="py-24 md:py-32">
+        <ScrollReveal>
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+              How does Anumiti approach this?
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Three pillars rooted in the Nyaya inference model.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="mt-12 grid gap-8 md:grid-cols-3">
-          <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-teal-50">
-              <Brain className="h-7 w-7 text-teal" />
-            </div>
-            <h3 className="text-xl font-bold text-navy">Infer</h3>
-            <p className="mt-3 text-sm text-gray-600">
-              AI-powered extraction that understands Indian document layouts, languages,
-              and formats. From unstructured scans to structured JSON in milliseconds.
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-teal-50">
-              <ShieldCheck className="h-7 w-7 text-teal" />
-            </div>
-            <h3 className="text-xl font-bold text-navy">Verify</h3>
-            <p className="mt-3 text-sm text-gray-600">
-              Multi-source validation against government databases. GSTIN lookup, PAN
-              verification, Aadhaar-mask compliance checks, and cross-document consistency
-              scoring.
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-teal-50">
-              <FileSearch className="h-7 w-7 text-teal" />
-            </div>
-            <h3 className="text-xl font-bold text-navy">Prove</h3>
-            <p className="mt-3 text-sm text-gray-600">
-              Complete audit trails for every operation. Consent records, processing logs,
-              compliance reports, and evidence packages ready for regulatory review.
-            </p>
-          </div>
+          {[
+            {
+              icon: Brain,
+              title: "Infer",
+              description:
+                "AI-powered extraction that understands Indian document layouts, languages, and formats. From unstructured scans to structured JSON in milliseconds.",
+            },
+            {
+              icon: ShieldCheck,
+              title: "Verify",
+              description:
+                "Multi-source validation against government databases. GSTIN lookup, PAN verification, Aadhaar-mask compliance checks, and cross-document consistency scoring.",
+            },
+            {
+              icon: FileSearch,
+              title: "Prove",
+              description:
+                "Complete audit trails for every operation. Consent records, processing logs, compliance reports, and evidence packages ready for regulatory review.",
+            },
+          ].map((pillar, i) => (
+            <ScrollReveal key={pillar.title} delay={i * 0.15}>
+              <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-teal-50">
+                  <pillar.icon className="h-7 w-7 text-teal" />
+                </div>
+                <h3 className="text-xl font-bold text-navy">{pillar.title}</h3>
+                <p className="mt-3 text-sm text-gray-600">{pillar.description}</p>
+              </div>
+            </ScrollReveal>
+          ))}
         </div>
       </Section>
 
       {/* Journey Timeline */}
-      <Section background="white" id="journey">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold text-navy md:text-4xl">
-            How did Anumiti come to be?
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            The journey to India&apos;s AI infrastructure for compliance and document intelligence.
-          </p>
-        </div>
+      <Section background="white" id="journey" className="py-24 md:py-32">
+        <ScrollReveal>
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+              How did Anumiti come to be?
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              The journey to India&apos;s AI infrastructure for compliance and document intelligence.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="relative mt-12 ml-4 border-l-2 border-teal-200 pl-8 md:ml-0 md:pl-0">
           <div className="space-y-12 md:mx-auto md:max-w-2xl">
-            {MILESTONES.map((milestone) => (
-              <div key={milestone.date} className="relative md:pl-10">
-                <div className="absolute -left-[41px] top-1 h-4 w-4 rounded-full border-2 border-teal bg-white md:-left-[9px]" />
-                <p className="text-xs font-bold uppercase tracking-wider text-teal">
-                  {milestone.date}
-                </p>
-                <h3 className="mt-1 text-lg font-bold text-navy">{milestone.title}</h3>
-                <p className="mt-1 text-sm text-gray-600">{milestone.description}</p>
-              </div>
+            {MILESTONES.map((milestone, i) => (
+              <ScrollReveal key={milestone.date} delay={i * 0.1}>
+                <div className="relative md:pl-10">
+                  <div className="absolute -left-[41px] top-1 h-4 w-4 rounded-full border-2 border-teal bg-white md:-left-[9px]" />
+                  <p className="text-xs font-bold uppercase tracking-wider text-teal">
+                    {milestone.date}
+                  </p>
+                  <h3 className="mt-1 text-lg font-bold text-navy">{milestone.title}</h3>
+                  <p className="mt-1 text-sm text-gray-600">{milestone.description}</p>
+                </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </Section>
 
       {/* Values */}
-      <Section background="gray" id="values">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold text-navy md:text-4xl">
-            What do we believe in?
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            Principles that guide every product decision at Anumiti.
-          </p>
-        </div>
+      <Section background="gray" id="values" className="py-24 md:py-32">
+        <ScrollReveal>
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+              What do we believe in?
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Principles that guide every product decision at Anumiti.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {VALUES.map((value) => (
-            <div
-              key={value.title}
-              className="rounded-2xl border border-gray-200 bg-white p-6 text-center"
-            >
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-teal-50">
-                <value.icon className="h-6 w-6 text-teal-700" />
+          {VALUES.map((value, i) => (
+            <ScrollReveal key={value.title} delay={i * 0.08}>
+              <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-teal-50">
+                  <value.icon className="h-6 w-6 text-teal-700" />
+                </div>
+                <h3 className="text-base font-bold text-navy">{value.title}</h3>
+                <p className="mt-2 text-xs leading-relaxed text-gray-500">
+                  {value.description}
+                </p>
               </div>
-              <h3 className="text-base font-bold text-navy">{value.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-gray-500">
-                {value.description}
-              </p>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </Section>
 
       {/* FAQ */}
-      <Section background="white">
-        <FAQSection faqs={ABOUT_FAQS} />
+      <Section background="white" className="py-24 md:py-32">
+        <ScrollReveal>
+          <FAQSection faqs={ABOUT_FAQS} />
+        </ScrollReveal>
       </Section>
 
       {/* CTA */}
-      <Section background="navy">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold text-white md:text-4xl">
-            Join us in building for India
-          </h2>
-          <p className="mt-4 text-lg text-gray-300">
-            Whether you are a customer, a partner, or a future teammate — we would love to
-            hear from you.
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <CTAButton href={CTA_URLS.signup} variant="primary" size="lg">
-              Get Started Free
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </CTAButton>
-            <CTAButton
-              href="/contact"
-              variant="secondary"
-              size="lg"
-              className="border-white/30 text-white hover:bg-white/10 hover:text-white"
-            >
-              Contact Us
-            </CTAButton>
-          </div>
+      <section className="relative overflow-hidden bg-navy py-24 md:py-32">
+        <FloatingOrbs variant="hero" />
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal>
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-3xl font-bold text-white md:text-4xl">
+                Join us in building for India
+              </h2>
+              <p className="mt-4 text-lg text-gray-300">
+                Whether you are a customer, a partner, or a future teammate — we would love to
+                hear from you.
+              </p>
+              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <CTAButton href={CTA_URLS.signup} variant="primary" size="lg">
+                  Get Started Free
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </CTAButton>
+                <CTAButton
+                  href="/contact"
+                  variant="secondary"
+                  size="lg"
+                  className="border-white/30 text-white hover:bg-white/10 hover:text-white"
+                >
+                  Contact Us
+                </CTAButton>
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
-      </Section>
+      </section>
     </>
   );
 }

@@ -13,6 +13,8 @@ import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { CTAButton } from "@/components/marketing/cta-button";
 import { Badge } from "@/components/marketing/badge";
 import { generatePageMetadata } from "@/lib/seo";
+import { ScrollReveal } from "@/components/animations/scroll-reveal";
+import { AnimatedBeam } from "@/components/animations/animated-beam";
 import type { ReactNode } from "react";
 
 export const metadata = generatePageMetadata({
@@ -88,52 +90,56 @@ const tools: ToolCard[] = [
 export default function ToolsPage() {
   return (
     <>
-      <div className="pt-28" />
-      <Section background="white">
-        <Breadcrumbs items={[{ name: "Free Tools", href: "/tools" }]} />
+      <div className="py-24 md:py-32">
+        <Section background="white">
+          <Breadcrumbs items={[{ name: "Free Tools", href: "/tools" }]} />
 
-        <div className="mt-8 mb-12">
-          <h1 className="text-4xl font-bold text-navy">
-            Free Compliance & Business Tools
-          </h1>
-          <p className="mt-3 max-w-2xl text-lg text-gray-600">
-            Practical tools for Indian businesses. Calculate DPDP penalties, check
-            compliance readiness, validate GST invoices, and explore our APIs — all free.
-          </p>
-        </div>
-
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {tools.map((tool) => (
-            <div
-              key={tool.href}
-              className="group flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition-all hover:border-gray-300 hover:shadow-lg"
-            >
-              <div className="mb-4 flex items-start justify-between">
-                {tool.icon}
-                {tool.badge && (
-                  <Badge
-                    variant={tool.badge === "Coming Soon" ? "gray" : "teal"}
-                  >
-                    {tool.badge}
-                  </Badge>
-                )}
-              </div>
-              <h2 className="text-lg font-semibold text-navy">{tool.title}</h2>
-              <p className="mt-2 flex-1 text-sm text-gray-600">
-                {tool.description}
+          <ScrollReveal>
+            <div className="mt-8 mb-12">
+              <h1 className="text-4xl font-bold text-navy">
+                Free Compliance & Business Tools
+              </h1>
+              <p className="mt-3 max-w-2xl text-lg text-gray-600">
+                Practical tools for Indian businesses. Calculate DPDP penalties, check
+                compliance readiness, validate GST invoices, and explore our APIs — all free.
               </p>
-              <div className="mt-5">
-                <CTAButton href={tool.href} variant="secondary" size="sm">
-                  <span className="flex items-center gap-1">
-                    {tool.badge === "Coming Soon" ? "Notify Me" : "Try Now"}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                </CTAButton>
-              </div>
             </div>
-          ))}
-        </div>
-      </Section>
+          </ScrollReveal>
+
+          <AnimatedBeam />
+
+          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {tools.map((tool, index) => (
+              <ScrollReveal key={tool.href} delay={index * 0.08}>
+                <div className="group flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-gray-300 hover:shadow-xl">
+                  <div className="mb-4 flex items-start justify-between">
+                    {tool.icon}
+                    {tool.badge && (
+                      <Badge
+                        variant={tool.badge === "Coming Soon" ? "gray" : "teal"}
+                      >
+                        {tool.badge}
+                      </Badge>
+                    )}
+                  </div>
+                  <h2 className="text-lg font-semibold text-navy">{tool.title}</h2>
+                  <p className="mt-2 flex-1 text-sm text-gray-600">
+                    {tool.description}
+                  </p>
+                  <div className="mt-5">
+                    <CTAButton href={tool.href} variant="secondary" size="sm">
+                      <span className="flex items-center gap-1">
+                        {tool.badge === "Coming Soon" ? "Notify Me" : "Try Now"}
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </span>
+                    </CTAButton>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </Section>
+      </div>
     </>
   );
 }
