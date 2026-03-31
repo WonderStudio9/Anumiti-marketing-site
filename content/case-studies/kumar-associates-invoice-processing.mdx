@@ -1,0 +1,42 @@
+---
+title: "Kumar & Associates Processes 50,000 Invoices Monthly with NETRA"
+description: "Kumar & Associates, a mid-size CA firm in Hyderabad, automated GST invoice processing across 12 Indian languages using Anumiti NETRA — reducing processing time by 85% and errors by 95%."
+company: "Kumar & Associates"
+industry: "Accounting & Tax"
+product: "netra"
+results:
+  - "50,000 invoices processed per month (up from 8,000 manually)"
+  - "85% reduction in invoice processing time"
+  - "95% reduction in data entry errors"
+  - "12 Indian languages supported including Telugu, Tamil, Hindi, Kannada"
+  - "ROI achieved within 3 months of deployment"
+date: "2026-01-20"
+---
+
+## The challenge: invoices in every Indian language
+
+Kumar & Associates is a chartered accountancy firm based in Hyderabad serving over 300 SME clients across Andhra Pradesh, Telangana, Tamil Nadu, and Karnataka. Their clients submit GST invoices in at least 12 different languages — many handwritten, many in poor scan quality.
+
+Their team of 15 data entry operators could process approximately 8,000 invoices per month. During GST filing season, the backlog would grow to 30,000+ invoices, requiring temporary staff and frequent overtime.
+
+Previous attempts with global OCR tools (including AWS Textract) failed on Telugu and Tamil invoices, with error rates exceeding 30% on regional language documents. The firm needed an Indian-language-first solution.
+
+## Why Kumar & Associates chose Anumiti NETRA
+
+**Regional language accuracy.** In their evaluation, NETRA correctly extracted data from Telugu and Tamil invoices with over 95% accuracy — compared to under 70% from alternatives.
+
+**Indian invoice understanding.** NETRA's pre-trained models understood Indian GST invoice formats, HSN codes, and the quirks of Indian business documents (mixed scripts, stamps, handwritten additions).
+
+**Simple API integration.** Their existing workflow management tool could call NETRA's API directly, eliminating the need for a separate processing platform.
+
+## The implementation
+
+The firm's IT consultant integrated NETRA's invoice extraction API into their existing workflow in under a week. Documents are scanned, uploaded via API, and NETRA returns structured JSON with line items, tax details, GSTIN, and totals.
+
+A human review step was retained for low-confidence extractions, but this now covers less than 5% of total volume.
+
+## The results
+
+Monthly throughput increased from 8,000 to 50,000 invoices. Processing time per invoice dropped from an average of 12 minutes (manual entry) to under 2 minutes (automated extraction plus review). Data entry errors fell by 95%.
+
+The firm redeployed 10 of their 15 data entry operators to higher-value reconciliation and advisory work, improving client service quality. During the most recent GST filing season, they cleared the entire backlog without hiring temporary staff for the first time in the firm's history.

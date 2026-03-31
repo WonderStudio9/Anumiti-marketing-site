@@ -1,0 +1,205 @@
+export interface PricingTier {
+  name: string;
+  price: string;
+  priceNumeric: number;
+  period: string;
+  description: string;
+  features: string[];
+  cta: string;
+  ctaHref: string;
+  popular?: boolean;
+  enterprise?: boolean;
+}
+
+export const KAVACH_PRICING: PricingTier[] = [
+  {
+    name: "Free",
+    price: "₹0",
+    priceNumeric: 0,
+    period: "forever",
+    description: "Get started with basic DPDP compliance",
+    features: [
+      "100 data subjects",
+      "1 language (English)",
+      "Basic consent builder",
+      "Compliance dashboard",
+      "Email support",
+    ],
+    cta: "Start Free",
+    ctaHref: "https://app.anumiti.com/signup?product=kavach&plan=free",
+  },
+  {
+    name: "Starter",
+    price: "₹2,999",
+    priceNumeric: 2999,
+    period: "/month",
+    description: "For growing businesses getting serious about compliance",
+    features: [
+      "5,000 data subjects",
+      "5 languages",
+      "WhatsApp consent flows",
+      "DPIA generator",
+      "Audit log exports",
+      "Priority email support",
+    ],
+    cta: "Start 14-day trial",
+    ctaHref: "https://app.anumiti.com/signup?product=kavach&plan=starter",
+  },
+  {
+    name: "Growth",
+    price: "₹7,999",
+    priceNumeric: 7999,
+    period: "/month",
+    description: "Full compliance suite for scaling companies",
+    features: [
+      "50,000 data subjects",
+      "22 languages",
+      "WhatsApp + SMS consent",
+      "AI model auditing",
+      "DSAR automation",
+      "Breach notification system",
+      "Custom consent templates",
+      "Slack integration",
+    ],
+    cta: "Start 14-day trial",
+    ctaHref: "https://app.anumiti.com/signup?product=kavach&plan=growth",
+    popular: true,
+  },
+  {
+    name: "Business",
+    price: "₹19,999",
+    priceNumeric: 19999,
+    period: "/month",
+    description: "Enterprise compliance with dedicated support",
+    features: [
+      "Unlimited data subjects",
+      "22 languages",
+      "Everything in Growth",
+      "Consent Manager registration path",
+      "Automated DPIA generation",
+      "Custom compliance reports",
+      "SSO & RBAC",
+      "Dedicated account manager",
+      "SLA guarantee",
+    ],
+    cta: "Talk to Sales",
+    ctaHref: "/contact",
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    priceNumeric: -1,
+    period: "",
+    description: "For large organizations and Consent Manager aspirants",
+    features: [
+      "Everything in Business",
+      "On-premise deployment option",
+      "Custom AI model governance",
+      "Consent Manager licensing",
+      "Multi-entity support",
+      "Custom integrations",
+      "24/7 phone support",
+      "Compliance training",
+    ],
+    cta: "Contact Us",
+    ctaHref: "/contact",
+    enterprise: true,
+  },
+];
+
+export const NETRA_PRICING: PricingTier[] = [
+  {
+    name: "Free",
+    price: "₹0",
+    priceNumeric: 0,
+    period: "forever",
+    description: "Try NETRA with sample documents",
+    features: [
+      "100 pages/month",
+      "50 verifications/month",
+      "5 document types",
+      "JSON API response",
+      "Community support",
+    ],
+    cta: "Get Free API Key",
+    ctaHref: "https://app.anumiti.com/signup?product=netra&plan=free",
+  },
+  {
+    name: "Starter",
+    price: "₹2,999",
+    priceNumeric: 2999,
+    period: "/month",
+    description: "For developers building document workflows",
+    features: [
+      "2,000 pages/month",
+      "500 verifications/month",
+      "All document types",
+      "22 languages",
+      "Batch API (10 docs)",
+      "Webhooks",
+      "Email support",
+    ],
+    cta: "Start Building",
+    ctaHref: "https://app.anumiti.com/signup?product=netra&plan=starter",
+  },
+  {
+    name: "Growth",
+    price: "₹9,999",
+    priceNumeric: 9999,
+    period: "/month",
+    description: "For teams processing documents at scale",
+    features: [
+      "20,000 pages/month",
+      "5,000 verifications/month",
+      "All document types",
+      "22 languages",
+      "Batch API (500 docs)",
+      "Priority processing",
+      "Custom extraction rules",
+      "Dashboard analytics",
+    ],
+    cta: "Start Scaling",
+    ctaHref: "https://app.anumiti.com/signup?product=netra&plan=growth",
+    popular: true,
+  },
+  {
+    name: "Business",
+    price: "₹24,999",
+    priceNumeric: 24999,
+    period: "/month",
+    description: "High-volume processing with premium support",
+    features: [
+      "100,000 pages/month",
+      "Unlimited verifications",
+      "Everything in Growth",
+      "Dedicated processing queue",
+      "Custom model training",
+      "On-premise option",
+      "SSO & RBAC",
+      "SLA guarantee",
+    ],
+    cta: "Talk to Sales",
+    ctaHref: "/contact",
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    priceNumeric: -1,
+    period: "",
+    description: "Unlimited processing for large organizations",
+    features: [
+      "Everything in Business",
+      "Unlimited pages",
+      "Custom deployment",
+      "Custom document types",
+      "Dedicated infrastructure",
+      "Custom integrations",
+      "24/7 phone support",
+    ],
+    cta: "Contact Us",
+    ctaHref: "/contact",
+    enterprise: true,
+  },
+];
+
+export const BUNDLE_DISCOUNT = 0.2; // 20% discount on KAVACH + NETRA bundle

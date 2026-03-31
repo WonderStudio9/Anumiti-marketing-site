@@ -1,0 +1,48 @@
+---
+title: "LegalMind Automates Contract Review with NETRA and KAVACH"
+description: "LegalMind, an AI-powered legal tech startup, uses Anumiti NETRA for multilingual contract extraction and KAVACH for PII compliance — processing 10,000+ legal documents monthly across 6 Indian languages."
+company: "LegalMind"
+industry: "Legal Tech"
+product: "both"
+results:
+  - "10,000+ legal documents processed monthly"
+  - "Contract review time reduced from 4 hours to 30 minutes"
+  - "PII auto-redaction across all processed documents"
+  - "6 Indian languages supported for contract extraction"
+  - "Full DPDP compliance for client data handling"
+date: "2025-12-10"
+---
+
+## The challenge: multilingual contracts with sensitive data
+
+LegalMind is a Delhi-based legal technology company that provides AI-powered contract review services to law firms and corporate legal departments across India. Their platform processes contracts, agreements, court orders, and regulatory filings — documents that contain dense legal language, often in Hindi, Marathi, Bengali, and other regional languages.
+
+Two problems converged: their existing NLP pipeline could not reliably extract clauses from Indian language contracts, and the DPDP Act created new obligations around the personal data contained in every legal document they processed.
+
+They needed document intelligence that worked across Indian languages, and they needed built-in compliance for the personal data they inevitably encountered in legal documents.
+
+## Why LegalMind chose Anumiti
+
+**NETRA for extraction.** NETRA's ability to extract structured data from legal documents in 6 Indian languages — including party names, dates, obligations, and monetary values — was unmatched by any alternative they tested.
+
+**KAVACH for compliance.** Every legal document contains personal data — names, addresses, Aadhaar numbers, financial details. KAVACH's PII detection and auto-redaction, integrated directly with NETRA's extraction pipeline, meant compliance was built into the processing workflow rather than bolted on afterward.
+
+**Unified platform.** Using both products from a single vendor with unified APIs simplified integration and reduced the operational overhead of managing multiple vendors.
+
+## The implementation
+
+LegalMind integrated both NETRA and KAVACH APIs into their contract analysis pipeline:
+
+**Document ingestion.** Uploaded contracts pass through NETRA for text extraction and structural analysis. NETRA identifies clauses, parties, dates, obligations, and key terms across languages.
+
+**PII handling.** Simultaneously, KAVACH scans extracted text for personal data (names, identification numbers, addresses, financial details). PII is either redacted for downstream analysis or flagged for consent verification depending on the workflow.
+
+**Structured output.** The combined pipeline produces a clean, structured analysis of each contract with risk flags, obligation summaries, and a PII map — all delivered via a single API response.
+
+## The results
+
+Contract review time dropped from an average of 4 hours of senior associate time to approximately 30 minutes of review of the AI-generated analysis. This allowed LegalMind's law firm clients to handle significantly higher volumes without proportional staffing increases.
+
+The PII compliance layer eliminated a major risk for their business. Before KAVACH, LegalMind stored unredacted personal data from thousands of contracts — a significant DPDP liability. Now, PII is handled according to DPDP requirements at the point of processing.
+
+LegalMind's platform now processes over 10,000 legal documents monthly, with accuracy rates above 92% for clause extraction in Hindi and English, and above 88% for other supported languages.

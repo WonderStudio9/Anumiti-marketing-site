@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #0A0F2C;
+  --navy: #0A0F2C;
+  --teal: #00D4AA;
+  --indigo: #1A1A6C;
+  --saffron: #E8820C;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0A0F2C;
+    --foreground: #E8E9F0;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+::selection {
+  background: #00D4AA;
+  color: #0A0F2C;
+}
+
+[id] {
+  scroll-margin-top: 80px;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #00D4AA 0%, #1A1A6C 50%, #E8820C 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-bg-hero {
+    background: linear-gradient(135deg, #0A0F2C 0%, #15194D 40%, #1A1A6C 100%);
+  }
+
+  .gradient-bg-teal {
+    background: linear-gradient(135deg, #00D4AA 0%, #00AA88 100%);
+  }
+}
