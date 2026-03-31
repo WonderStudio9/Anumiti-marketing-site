@@ -82,21 +82,20 @@ export default function BlogPostPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Content - rendered as plain text for now (MDX compilation to be added) */}
-          <div className="prose prose-navy prose-lg max-w-none prose-headings:font-bold prose-h2:text-navy-900 prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-li:text-gray-700 prose-strong:text-navy prose-a:text-teal prose-a:no-underline hover:prose-a:underline">
-            {/* MDX content rendering will be enhanced in Phase 4 */}
+          {/* Content */}
+          <div className="max-w-none">
             <div
               dangerouslySetInnerHTML={{
                 __html: post.content
-                  .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold text-navy-900 mt-8 mb-4">$1</h2>')
-                  .replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold text-navy-800 mt-6 mb-3">$1</h3>')
-                  .replace(/^\d+\. \*\*(.*?)\*\*: (.*$)/gm, "<p><strong>$1</strong>: $2</p>")
-                  .replace(/^- (.*$)/gm, "<li>$1</li>")
-                  .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                  .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold mt-10 mb-4" style="color:#0A0F2C">$1</h2>')
+                  .replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold mt-8 mb-3" style="color:#0A0F2C">$1</h3>')
+                  .replace(/^\d+\. \*\*(.*?)\*\*: (.*$)/gm, '<p class="mb-3 leading-relaxed" style="color:#374151"><strong style="color:#0A0F2C">$1</strong>: $2</p>')
+                  .replace(/^- (.*$)/gm, '<li class="mb-2 ml-6 list-disc" style="color:#374151">$1</li>')
+                  .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#0A0F2C">$1</strong>')
                   .replace(/\*(.*?)\*/g, "<em>$1</em>")
-                  .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
-                  .replace(/^(?!<[hl]|<p|<li|<a|<str|<em|---)(.*\S.*)$/gm, "<p>$1</p>")
-                  .replace(/---/g, "<hr />"),
+                  .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" style="color:#00D4AA;text-decoration:underline">$1</a>')
+                  .replace(/^(?!<[hl]|<p|<li|<a|<str|<em|---)(.*\S.*)$/gm, '<p class="mb-4 leading-relaxed" style="color:#374151">$1</p>')
+                  .replace(/---/g, '<hr class="my-8 border-gray-200" />'),
               }}
             />
           </div>
