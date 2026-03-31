@@ -1,10 +1,9 @@
 import { FileText } from "lucide-react";
 import { Section } from "@/components/marketing/section";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
-import { CTAButton } from "@/components/marketing/cta-button";
 import { FAQSection } from "@/components/marketing/faq-section";
+import { InvoiceValidator } from "@/components/tools/invoice-validator";
 import { generatePageMetadata } from "@/lib/seo";
-import { CTA_URLS } from "@/lib/constants";
 
 export const metadata = generatePageMetadata({
   title: "GST Invoice Validator — Check Invoice Compliance | Anumiti",
@@ -55,21 +54,9 @@ export default function GSTInvoiceValidatorPage() {
             HSN codes, and tax calculations. Supports all Indian languages.
           </p>
 
-          {/* Validator placeholder */}
-          <div className="mt-10 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-            <FileText className="mx-auto h-12 w-12 text-gray-400" />
-            <h2 className="mt-4 text-xl font-semibold text-gray-700">
-              Upload and Validate Coming Soon
-            </h2>
-            <p className="mt-2 text-gray-500">
-              Drag and drop a GST invoice image or PDF to validate against GST rules.
-              Supports scanned documents in 22 Indian languages.
-            </p>
-            <div className="mt-6">
-              <CTAButton href={CTA_URLS.netraApiKey} size="sm">
-                Try NETRA API for Invoice Processing
-              </CTAButton>
-            </div>
+          {/* Interactive Validator */}
+          <div className="mt-10">
+            <InvoiceValidator />
           </div>
 
           {/* Validation checks */}

@@ -1,10 +1,9 @@
 import { ClipboardCheck } from "lucide-react";
 import { Section } from "@/components/marketing/section";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
-import { CTAButton } from "@/components/marketing/cta-button";
 import { FAQSection } from "@/components/marketing/faq-section";
+import { ComplianceChecklist } from "@/components/tools/compliance-checklist";
 import { generatePageMetadata } from "@/lib/seo";
-import { CTA_URLS } from "@/lib/constants";
 
 export const metadata = generatePageMetadata({
   title: "DPDP Compliance Checklist — Track Your Readiness | Anumiti",
@@ -31,62 +30,6 @@ const faqs = [
   },
 ];
 
-const checklistCategories = [
-  {
-    title: "Data Mapping & Inventory",
-    items: [
-      "Inventory all personal data collection points",
-      "Document purposes for each data processing activity",
-      "Map data flows including third-party sharing",
-      "Identify data storage locations and retention periods",
-    ],
-  },
-  {
-    title: "Consent Management",
-    items: [
-      "Implement granular consent collection mechanism",
-      "Ensure consent is as easy to withdraw as to give",
-      "Record and maintain consent audit trails",
-      "Support Consent Manager integration",
-    ],
-  },
-  {
-    title: "Privacy Notices",
-    items: [
-      "Draft DPDP-compliant privacy notices",
-      "Provide notices in English and regional languages",
-      "Display notices before or at point of collection",
-      "Include all prescribed content requirements",
-    ],
-  },
-  {
-    title: "Data Principal Rights",
-    items: [
-      "Build access request workflow",
-      "Implement correction and erasure mechanisms",
-      "Establish grievance redressal process",
-      "Support nomination rights",
-    ],
-  },
-  {
-    title: "Security & Breach Response",
-    items: [
-      "Implement reasonable security safeguards",
-      "Create breach detection and response plan",
-      "Establish Board notification process",
-      "Build data principal breach notification workflow",
-    ],
-  },
-  {
-    title: "Governance (Significant Data Fiduciaries)",
-    items: [
-      "Appoint India-based Data Protection Officer",
-      "Conduct Data Protection Impact Assessments",
-      "Arrange periodic independent audits",
-      "Implement algorithmic transparency measures",
-    ],
-  },
-];
 
 export default function DPDPChecklistPage() {
   return (
@@ -112,48 +55,9 @@ export default function DPDPChecklistPage() {
             covers all major requirements from consent management to breach response.
           </p>
 
-          {/* Interactive checklist placeholder */}
-          <div className="mt-10 space-y-8">
-            {checklistCategories.map((category) => (
-              <div key={category.title} className="rounded-xl border border-gray-200 bg-white">
-                <div className="border-b border-gray-100 px-6 py-4">
-                  <h2 className="text-lg font-semibold text-navy">
-                    {category.title}
-                  </h2>
-                </div>
-                <div className="p-6 space-y-3">
-                  {category.items.map((item) => (
-                    <label
-                      key={item}
-                      className="flex items-start gap-3 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        disabled
-                        className="mt-1 h-4 w-4 rounded border-gray-300"
-                      />
-                      <span className="text-sm text-gray-700">{item}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <div className="mt-10 rounded-xl border border-teal/20 bg-teal-50 p-8 text-center">
-            <h2 className="text-xl font-bold text-navy">
-              Automate your DPDP compliance
-            </h2>
-            <p className="mt-2 text-gray-600">
-              KAVACH turns this checklist into automated workflows — consent
-              management, rights handling, breach detection, and audit reports.
-            </p>
-            <div className="mt-4">
-              <CTAButton href={CTA_URLS.kavachTrial} size="sm">
-                Start Free Trial
-              </CTAButton>
-            </div>
+          {/* Interactive Checklist */}
+          <div className="mt-10">
+            <ComplianceChecklist />
           </div>
         </div>
       </Section>

@@ -8,8 +8,6 @@ import {
   Code2,
   Server,
   BookOpen,
-  Globe,
-  MessageCircle,
 } from "lucide-react";
 import { Section } from "@/components/marketing/section";
 import { CTAButton } from "@/components/marketing/cta-button";
@@ -27,43 +25,12 @@ export const metadata = generatePageMetadata({
 
 /* ---- Data ---- */
 
-const TEAM = [
-  {
-    name: "Roy",
-    role: "Founder & CEO",
-    bio: "Former compliance tech lead. Obsessed with making DPDP compliance accessible to every Indian MSME. Built LexiReview before pivoting to Anumiti.",
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Anirban",
-    role: "CTO",
-    bio: "ML engineer with deep expertise in multilingual NLP and Indian document processing. Previously built OCR systems at scale for government document digitization.",
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Mainak",
-    role: "Lead Engineer",
-    bio: "Full-stack engineer who cares about developer experience. Designed the NETRA API from day one to be the simplest document intelligence API in India.",
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Aishi",
-    role: "Growth & Sales",
-    bio: "GTM strategist focused on the Indian compliance and legaltech ecosystem. Connects the product to the CAs, fintechs, and enterprises that need it most.",
-    linkedin: "#",
-    twitter: "#",
-  },
-];
-
 const MILESTONES = [
   {
     date: "2023 Q4",
-    title: "LexiReview founded",
+    title: "Research begins",
     description:
-      "Started as a legal document review tool. Early research on Indian document processing and multilingual OCR.",
+      "Started deep research into Indian document processing, multilingual OCR, and the compliance landscape for India's emerging data protection framework.",
   },
   {
     date: "2024 Q1",
@@ -135,11 +102,6 @@ const ABOUT_FAQS = [
     question: "What does 'Anumiti' mean?",
     answer:
       "Anumiti (अनुमिति) is a concept from Nyaya philosophy, one of the six classical schools of Indian thought. It means 'knowledge derived through inference' — reaching valid conclusions from observable evidence. This is exactly what our products do: infer structure from documents, verify against authoritative sources, and produce provable audit trails.",
-  },
-  {
-    question: "Why did you pivot from LexiReview?",
-    answer:
-      "LexiReview was a narrow legal document review tool. When the DPDP Act became law, we realized that India needs far more than document review — it needs a comprehensive infrastructure layer for compliance and document intelligence that works in every Indian language. Anumiti is that infrastructure.",
   },
   {
     question: "Are you hiring?",
@@ -279,51 +241,6 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* Team */}
-      <Section background="gray" id="team">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold text-navy md:text-4xl">
-            Who is building Anumiti?
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            A small, focused team obsessed with building the best AI infrastructure for
-            India.
-          </p>
-        </div>
-
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {TEAM.map((member) => (
-            <div
-              key={member.name}
-              className="rounded-2xl border border-gray-200 bg-white p-6 text-center"
-            >
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-navy text-2xl font-bold text-teal">
-                {member.name.charAt(0)}
-              </div>
-              <h3 className="text-lg font-bold text-navy">{member.name}</h3>
-              <p className="text-sm font-medium text-teal">{member.role}</p>
-              <p className="mt-3 text-xs leading-relaxed text-gray-500">{member.bio}</p>
-              <div className="mt-4 flex items-center justify-center gap-3">
-                <a
-                  href={member.linkedin}
-                  aria-label={`${member.name} on LinkedIn`}
-                  className="text-gray-400 hover:text-indigo transition-colors"
-                >
-                  <Globe className="h-4 w-4" />
-                </a>
-                <a
-                  href={member.twitter}
-                  aria-label={`${member.name} on Twitter`}
-                  className="text-gray-400 hover:text-indigo transition-colors"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Section>
-
       {/* Journey Timeline */}
       <Section background="white" id="journey">
         <div className="mx-auto max-w-3xl text-center">
@@ -331,7 +248,7 @@ export default function AboutPage() {
             How did Anumiti come to be?
           </h2>
           <p className="mt-4 text-lg text-gray-600">
-            From a legal document tool to India&apos;s AI infrastructure for compliance.
+            The journey to India&apos;s AI infrastructure for compliance and document intelligence.
           </p>
         </div>
 

@@ -1,10 +1,9 @@
 import { FileCheck } from "lucide-react";
 import { Section } from "@/components/marketing/section";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
-import { CTAButton } from "@/components/marketing/cta-button";
 import { FAQSection } from "@/components/marketing/faq-section";
+import { ConsentGenerator } from "@/components/tools/consent-generator";
 import { generatePageMetadata } from "@/lib/seo";
-import { CTA_URLS } from "@/lib/constants";
 
 export const metadata = generatePageMetadata({
   title: "Consent Notice Generator — DPDP-Compliant Notices | Anumiti",
@@ -56,21 +55,9 @@ export default function ConsentNoticeGeneratorPage() {
             notice in multiple Indian languages.
           </p>
 
-          {/* Generator placeholder */}
-          <div className="mt-10 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-            <FileCheck className="mx-auto h-12 w-12 text-gray-400" />
-            <h2 className="mt-4 text-xl font-semibold text-gray-700">
-              Interactive Generator Coming Soon
-            </h2>
-            <p className="mt-2 text-gray-500">
-              Select your industry, data types, and processing purposes to generate
-              a customizable consent notice in English, Hindi, and other Indian languages.
-            </p>
-            <div className="mt-6">
-              <CTAButton href={CTA_URLS.kavachTrial} size="sm">
-                Generate Notices with KAVACH
-              </CTAButton>
-            </div>
+          {/* Interactive Generator */}
+          <div className="mt-10">
+            <ConsentGenerator />
           </div>
 
           {/* What makes a good consent notice */}

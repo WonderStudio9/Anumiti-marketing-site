@@ -100,15 +100,15 @@ export default function GuidePage({ params }: Props) {
           </div>
 
           {/* Content */}
-          <div className="prose prose-navy prose-lg max-w-none prose-headings:font-bold prose-a:text-teal prose-a:no-underline hover:prose-a:underline">
+          <div className="prose prose-navy prose-lg max-w-none prose-headings:font-bold prose-h2:text-navy-900 prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-li:text-gray-700 prose-strong:text-navy prose-a:text-teal prose-a:no-underline hover:prose-a:underline">
             <div
               dangerouslySetInnerHTML={{
                 __html: guide.content
                   .replace(
                     /^## (.*$)/gm,
-                    '<h2 id="$1">$1</h2>'
+                    '<h2 class="text-2xl font-bold text-navy-900 mt-8 mb-4">$1</h2>'
                   )
-                  .replace(/^### (.*$)/gm, "<h3>$1</h3>")
+                  .replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold text-navy-800 mt-6 mb-3">$1</h3>')
                   .replace(
                     /^\d+\. \*\*(.*?)\*\*: (.*$)/gm,
                     "<p><strong>$1</strong>: $2</p>"

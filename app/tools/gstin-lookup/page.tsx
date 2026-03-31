@@ -1,10 +1,9 @@
 import { Search } from "lucide-react";
 import { Section } from "@/components/marketing/section";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
-import { CTAButton } from "@/components/marketing/cta-button";
 import { FAQSection } from "@/components/marketing/faq-section";
+import { GSTINLookup } from "@/components/tools/gstin-lookup";
 import { generatePageMetadata } from "@/lib/seo";
-import { CTA_URLS } from "@/lib/constants";
 
 export const metadata = generatePageMetadata({
   title: "GSTIN Lookup — Verify Business Registration | Anumiti",
@@ -60,21 +59,9 @@ export default function GSTINLookupPage() {
             status, and compliance history before engaging with vendors or partners.
           </p>
 
-          {/* Lookup placeholder */}
-          <div className="mt-10 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-            <Search className="mx-auto h-12 w-12 text-gray-400" />
-            <h2 className="mt-4 text-xl font-semibold text-gray-700">
-              GSTIN Search Coming Soon
-            </h2>
-            <p className="mt-2 text-gray-500">
-              Enter a 15-digit GSTIN to instantly retrieve business details,
-              registration type, and filing compliance status.
-            </p>
-            <div className="mt-6">
-              <CTAButton href={CTA_URLS.netraApiKey} size="sm">
-                Automate GSTIN Validation with NETRA API
-              </CTAButton>
-            </div>
+          {/* Interactive GSTIN Lookup */}
+          <div className="mt-10">
+            <GSTINLookup />
           </div>
 
           {/* GSTIN Format explanation */}

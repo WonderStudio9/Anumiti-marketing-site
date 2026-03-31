@@ -1,10 +1,9 @@
 import { Calculator } from "lucide-react";
 import { Section } from "@/components/marketing/section";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
-import { CTAButton } from "@/components/marketing/cta-button";
 import { FAQSection } from "@/components/marketing/faq-section";
+import { PenaltyCalculator } from "@/components/tools/penalty-calculator";
 import { generatePageMetadata } from "@/lib/seo";
-import { CTA_URLS } from "@/lib/constants";
 
 export const metadata = generatePageMetadata({
   title: "DPDP Penalty Calculator — Estimate Your Risk | Anumiti",
@@ -61,21 +60,9 @@ export default function DPDPPenaltyCalculatorPage() {
             exposure.
           </p>
 
-          {/* Calculator UI placeholder */}
-          <div className="mt-10 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-            <Calculator className="mx-auto h-12 w-12 text-gray-400" />
-            <h2 className="mt-4 text-xl font-semibold text-gray-700">
-              Interactive Calculator Coming Soon
-            </h2>
-            <p className="mt-2 text-gray-500">
-              Select violation type, company revenue, aggravating factors, and get an
-              instant penalty estimate with a detailed breakdown.
-            </p>
-            <div className="mt-6">
-              <CTAButton href={CTA_URLS.kavachTrial} size="sm">
-                Get Compliant Before Penalties Apply
-              </CTAButton>
-            </div>
+          {/* Interactive Calculator */}
+          <div className="mt-10">
+            <PenaltyCalculator />
           </div>
 
           {/* Penalty overview */}
