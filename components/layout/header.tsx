@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, ChevronDown, Shield, Eye } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { NAV_ITEMS, CTA_URLS, SITE_CONFIG } from "@/lib/constants";
+import { NAV_ITEMS, CTA_URLS } from "@/lib/constants";
 import { CTAButton } from "@/components/marketing/cta-button";
 import { AnumitiLogo } from "@/components/brand/anumiti-logo";
 

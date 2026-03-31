@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, type CSSProperties } from 'react';
+import { useState, useEffect } from 'react';
 
 type LogoVariant = 'full' | 'icon' | 'footer' | 'favicon';
 type LogoTheme = 'dark' | 'light';

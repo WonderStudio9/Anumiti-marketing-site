@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { GitBranch, Globe, MessageCircle } from "lucide-react";
-import { SITE_CONFIG, FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/constants";
+import { FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/constants";
 import { AnumitiLogo } from "@/components/brand/anumiti-logo";
 
 export function Footer() {
