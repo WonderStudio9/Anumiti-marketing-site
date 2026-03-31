@@ -24,12 +24,12 @@ export function ComparisonTable({ headers, rows, highlightColumn = 0 }: Comparis
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-gray-200 bg-gray-50">
-            <th className="px-4 py-3 text-left font-medium text-gray-500">Feature</th>
+            <th className="px-4 py-3 text-left font-medium text-gray-700">Feature</th>
             {headers.map((header, i) => (
               <th
                 key={header}
                 className={`px-4 py-3 text-center font-semibold ${
-                  i === highlightColumn ? "bg-teal-50 text-teal-700" : "text-navy"
+                  i === highlightColumn ? "bg-teal-50 text-teal-700" : "text-navy-900"
                 }`}
               >
                 {header}

@@ -139,7 +139,7 @@ export default function NetraPage() {
       <Section background="white" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               What does a NETRA API call look like?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -150,7 +150,7 @@ export default function NetraPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           <ScrollReveal direction="left" delay={0.1}>
             <div>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-600">
                 Request
               </h3>
               <CodeWindow title="terminal" lines={DEMO_CURL_LINES} />
@@ -158,7 +158,7 @@ export default function NetraPage() {
           </ScrollReveal>
           <ScrollReveal direction="right" delay={0.2}>
             <div>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-600">
                 Response
               </h3>
               <CodeWindow title="response.json" lines={DEMO_RESPONSE_LINES} />
@@ -171,7 +171,7 @@ export default function NetraPage() {
       <Section background="gray" id="features" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               What can NETRA do?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -197,7 +197,7 @@ export default function NetraPage() {
       <Section background="white" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               Which Indian documents does NETRA support?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -209,7 +209,7 @@ export default function NetraPage() {
           {SUPPORTED_DOCUMENTS.map((doc, index) => (
             <ScrollReveal key={doc} delay={0.03 * index}>
               <motion.div
-                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-navy transition-colors hover:border-saffron/40 hover:bg-saffron-50"
+                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:border-saffron/40 hover:bg-saffron-50"
                 whileHover={{ y: -2, boxShadow: "0 8px 24px -8px rgba(0,0,0,0.1)" }}
                 transition={{ duration: 0.2 }}
               >
@@ -225,7 +225,7 @@ export default function NetraPage() {
       <Section background="gray" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               How do I integrate NETRA?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -242,7 +242,7 @@ export default function NetraPage() {
       <Section background="white" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               How fast and accurate is NETRA?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -260,7 +260,7 @@ export default function NetraPage() {
             <ScrollReveal key={stat.label} delay={0.1 * index}>
               <div className="text-center">
                 <stat.icon className="mx-auto mb-3 h-8 w-8 text-saffron" />
-                <AnimatedCounter value={stat.value} label={stat.label} className="[&>div:first-child]:text-navy [&>div:first-child]:md:text-4xl" />
+                <AnimatedCounter value={stat.value} label={stat.label} className="[&>div:first-child]:text-navy-900 [&>div:first-child]:md:text-4xl" />
               </div>
             </ScrollReveal>
           ))}
@@ -271,7 +271,7 @@ export default function NetraPage() {
       <Section background="gray" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               How does NETRA compare to alternatives?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -303,7 +303,7 @@ export default function NetraPage() {
       <Section background="white" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               Who uses NETRA?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -329,7 +329,7 @@ export default function NetraPage() {
                   <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-saffron-50">
                     <useCase.icon className="h-6 w-6 text-saffron" />
                   </div>
-                  <h3 className="text-lg font-semibold text-navy group-hover:text-saffron">
+                  <h3 className="text-lg font-semibold text-navy-900 group-hover:text-saffron">
                     {useCase.title}
                   </h3>
                   <p className="mt-2 text-sm text-gray-600">{useCase.description}</p>

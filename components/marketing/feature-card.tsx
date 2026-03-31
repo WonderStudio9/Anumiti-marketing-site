@@ -39,7 +39,7 @@ export function FeatureCard({
       >
         <Icon className="h-6 w-6" />
       </div>
-      <h3 className="mb-2 text-lg font-semibold text-navy">{title}</h3>
+      <h3 className="mb-2 text-lg font-semibold text-navy-900">{title}</h3>
       <p className="text-sm leading-relaxed text-gray-600">{description}</p>
     </motion.div>
   );

@@ -50,8 +50,8 @@ export function AnimatedCounter({ value, label, className = "" }: AnimatedCounte
 
   return (
     <div ref={ref} className={`text-center ${className}`}>
-      <div className="text-4xl font-bold text-teal md:text-5xl">{display}</div>
-      <div className="mt-2 text-sm text-gray-500">{label}</div>
+      <div className="text-4xl font-bold text-navy-900 md:text-5xl">{display}</div>
+      <div className="mt-2 text-sm text-gray-600">{label}</div>
     </div>
   );
 }

@@ -25,7 +25,7 @@ function FAQItem({ question, answer }: FAQ) {
         className="flex w-full items-center justify-between py-5 text-left"
         aria-expanded={open}
       >
-        <span className="pr-4 text-base font-medium text-navy">{question}</span>
+        <span className="pr-4 text-base font-medium text-navy-900">{question}</span>
         <ChevronDown
           className={`h-5 w-5 shrink-0 text-gray-400 transition-transform ${
             open ? "rotate-180" : ""
@@ -45,7 +45,7 @@ export function FAQSection({ title = "Frequently Asked Questions", faqs }: FAQSe
   return (
     <div>
       <JsonLd data={faqSchema(faqs)} />
-      <h2 className="mb-8 text-2xl font-bold text-navy md:text-3xl">{title}</h2>
+      <h2 className="mb-8 text-2xl font-bold text-navy-900 md:text-3xl">{title}</h2>
       <div className="mx-auto max-w-3xl divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white px-6">
         {faqs.map((faq) => (
           <FAQItem key={faq.question} question={faq.question} answer={faq.answer} />

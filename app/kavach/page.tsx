@@ -116,7 +116,7 @@ export default function KavachPage() {
             <div className="mx-auto mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
               <AlertTriangle className="h-8 w-8 text-red-500" />
             </div>
-            <h2 className="text-balance text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-balance text-3xl font-bold text-navy-900 md:text-4xl">
               The fine for one breach is {"\u20B9"}250 crore. Your compliance budget is zero.
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-gray-600">
@@ -148,7 +148,7 @@ export default function KavachPage() {
       <Section background="gray" id="features" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               What does KAVACH include?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -174,7 +174,7 @@ export default function KavachPage() {
       <Section background="white" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               How do I deploy KAVACH?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -220,7 +220,7 @@ export default function KavachPage() {
                   {item.step}
                 </motion.div>
                 <item.icon className="mx-auto mb-3 h-8 w-8 text-indigo" />
-                <h3 className="text-lg font-semibold text-navy">{item.title}</h3>
+                <h3 className="text-lg font-semibold text-navy-900">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-gray-600">{item.description}</p>
               </motion.div>
             </ScrollReveal>
@@ -232,7 +232,7 @@ export default function KavachPage() {
       <Section background="gray" id="pricing" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               How much does KAVACH cost?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -257,10 +257,10 @@ export default function KavachPage() {
                     <Badge variant="indigo">Most Popular</Badge>
                   </div>
                 )}
-                <h3 className="text-lg font-semibold text-navy">{tier.name}</h3>
+                <h3 className="text-lg font-semibold text-navy-900">{tier.name}</h3>
                 <div className="mt-2">
-                  <span className="text-3xl font-bold text-navy">{tier.price}</span>
-                  <span className="text-sm text-gray-500">{tier.period}</span>
+                  <span className="text-3xl font-bold text-navy-900">{tier.price}</span>
+                  <span className="text-sm text-gray-600">{tier.period}</span>
                 </div>
                 <p className="mt-2 text-sm text-gray-600">{tier.description}</p>
                 <ul className="mt-6 space-y-2">
@@ -300,7 +300,7 @@ export default function KavachPage() {
       <Section background="white" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               How does KAVACH compare to alternatives?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -332,7 +332,7 @@ export default function KavachPage() {
       <Section background="gray" className="py-24 md:py-32">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+            <h2 className="text-3xl font-bold text-navy-900 md:text-4xl">
               Who is KAVACH built for?
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -358,7 +358,7 @@ export default function KavachPage() {
                   <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-50">
                     <useCase.icon className="h-6 w-6 text-indigo" />
                   </div>
-                  <h3 className="text-lg font-semibold text-navy group-hover:text-indigo">
+                  <h3 className="text-lg font-semibold text-navy-900 group-hover:text-indigo">
                     {useCase.title}
                   </h3>
                   <p className="mt-2 text-sm text-gray-600">{useCase.description}</p>
