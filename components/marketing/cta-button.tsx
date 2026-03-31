@@ -41,8 +41,14 @@ export function CTAButton({
   const classes = `inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 
   if (external ?? href.startsWith("http")) {
+    const isAnumitiApp = href.includes("anumiti.com");
     return (
-      <a href={href} className={classes} target="_blank" rel="noopener noreferrer">
+      <a
+        href={href}
+        className={classes}
+        target={isAnumitiApp ? "_self" : "_blank"}
+        rel={isAnumitiApp ? undefined : "noopener noreferrer"}
+      >
         {children}
       </a>
     );
