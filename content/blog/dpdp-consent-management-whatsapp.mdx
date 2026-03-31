@@ -1,0 +1,398 @@
+---
+title: "How to Build DPDP-Compliant Consent Flows for WhatsApp Business"
+description: "Step-by-step guide to building DPDP-compliant consent flows on WhatsApp Business API. Covers opt-in, opt-out, STOP keyword, and consent artifacts."
+date: "2026-03-31"
+author: "Anumiti Team"
+category: "Tutorials"
+tags: ["DPDP", "consent", "WhatsApp", "MSME", "KAVACH"]
+image: "/og/dpdp-consent-management-whatsapp.png"
+faqs:
+  - q: "Is WhatsApp Business API consent compliant with DPDP?"
+    a: "WhatsApp's built-in opt-in mechanism alone is not sufficient for DPDP compliance. You need additional consent layers that specify processing purposes, provide multilingual notices, generate tamper-proof consent artifacts, and enable easy withdrawal as required by Section 6 of the DPDP Act."
+  - q: "Do I need consent for transactional WhatsApp messages?"
+    a: "Transactional messages like order confirmations and delivery updates may qualify under deemed consent (Section 7) if the processing is necessary for fulfilling a contract. However, marketing messages, product recommendations, and promotional content always require explicit consent under Section 6."
+  - q: "What is the STOP keyword requirement for WhatsApp consent?"
+    a: "While WhatsApp does not mandate a specific keyword, implementing STOP as an instant opt-out mechanism satisfies the DPDP Section 6(4) requirement that consent withdrawal must be as easy as giving consent. The keyword must trigger immediate cessation of non-essential messages and generate a withdrawal artifact."
+  - q: "How do I manage consent in multiple languages on WhatsApp?"
+    a: "The DPDP Rules 2025 require consent in all 22 scheduled languages. On WhatsApp, detect the user's language preference from their device settings or ask during the first interaction, then deliver consent notices and collect opt-ins in that language. Store the language of consent as part of the consent artifact."
+  - q: "Can I use WhatsApp message templates for consent collection?"
+    a: "Yes. WhatsApp Business API message templates are the recommended method for consent collection. Submit templates with clear consent language, purpose specification, and interactive buttons for opt-in/opt-out. Templates must be pre-approved by Meta before sending."
+  - q: "What consent records must I keep for WhatsApp interactions?"
+    a: "You must retain a consent artifact for every opt-in and opt-out event that includes: the data principal's identifier, timestamp, the exact consent notice shown, the language used, the specific purposes consented to, the method of consent, and the WhatsApp message ID for traceability."
+  - q: "How long must I retain WhatsApp consent records?"
+    a: "The DPDP Act does not specify a fixed retention period for consent records, but they must be retained for as long as the processing continues and for a reasonable period afterward to demonstrate compliance. Best practice is to retain consent artifacts for the duration of the customer relationship plus 3-5 years."
+  - q: "Can I send marketing messages on WhatsApp without DPDP consent?"
+    a: "No. Marketing messages on WhatsApp require explicit, informed consent under Section 6 of the DPDP Act. Pre-existing WhatsApp opt-ins that were collected before the DPDP Act's enforcement do not satisfy the Act's requirements unless they meet all Section 6 criteria including purpose specificity and language accessibility."
+  - q: "What happens if a customer sends STOP but I keep messaging them?"
+    a: "Continuing to send messages after a customer withdraws consent violates Section 6(4) of the DPDP Act and can result in penalties up to INR 50 crore for non-compliance with Data Fiduciary obligations. It also violates WhatsApp's Business Policy and can lead to account suspension."
+  - q: "Do I need separate consent for different message categories on WhatsApp?"
+    a: "Yes. Granular consent is required under the DPDP Act. You must obtain separate consent for each distinct processing purpose: order updates, marketing promotions, product recommendations, feedback collection, and any other category. Bundled consent that covers all categories in a single opt-in is non-compliant."
+---
+
+WhatsApp is the primary customer communication channel for millions of Indian businesses. With over 500 million WhatsApp users in India, D2C brands, local retailers, fintech companies, and healthcare providers run significant portions of their customer interactions through WhatsApp Business. Order confirmations, marketing campaigns, appointment reminders, payment links, and customer support all flow through this single channel.
+
+The DPDP Act 2023 fundamentally changes how businesses must handle these interactions. Every WhatsApp message that involves personal data — and nearly all of them do — now operates under the consent, purpose limitation, and data principal rights requirements of the Act. Businesses that built their WhatsApp engagement without structured consent flows face a compliance gap that must be closed before May 2027.
+
+This guide provides the technical and legal steps to build DPDP-compliant consent flows on WhatsApp Business API.
+
+## What does Section 6 of the DPDP Act require for WhatsApp consent?
+
+Section 6 of the DPDP Act requires that consent be free, specific, informed, unconditional, and unambiguous, given through a clear affirmative action. For WhatsApp Business interactions, this means every processing purpose must have its own consent request, delivered in the user's preferred language, with an equally easy withdrawal mechanism.
+
+The specific requirements mapped to WhatsApp:
+
+1. **Free.** Consent cannot be coerced. You cannot refuse to process an order unless the customer also consents to marketing messages. Each purpose stands alone.
+
+2. **Specific.** "We will use your data for marketing" is not specific. "We will send you weekly product offers via WhatsApp" is. The purpose must be narrow enough that the data principal understands exactly what they are agreeing to.
+
+3. **Informed.** Before consent is collected, the data principal must receive a notice describing the purpose, the personal data involved, and their rights. On WhatsApp, this notice must be delivered as a message the user can read before taking any action.
+
+4. **Unconditional.** Consent cannot be a precondition for receiving a service that does not require the data. Transactional messages can be sent based on deemed consent (Section 7), but marketing requires separate, unconditional consent.
+
+5. **Unambiguous and affirmative.** The data principal must take an explicit action to consent. Silence, pre-ticked options, or inactivity do not count. On WhatsApp, this means an interactive button tap or a specific reply keyword.
+
+Additionally, Section 6(4) mandates that withdrawal of consent must be as easy as giving it. If a customer taps a button to opt in, they must be able to tap a button (or send a keyword like STOP) to opt out.
+
+## How do you structure a DPDP-compliant WhatsApp consent flow?
+
+A DPDP-compliant WhatsApp consent flow has four stages: initial notice delivery, granular purpose-level opt-in, consent artifact generation, and always-available opt-out. Each stage maps to specific DPDP Act requirements and must be implemented through the WhatsApp Business API template message system.
+
+Here is the complete flow:
+
+### Stage 1: Privacy Notice Delivery
+
+When a customer first interacts with your business on WhatsApp (or when you migrate existing customers to compliant flows), send a privacy notice that covers the minimum requirements of Section 5:
+
+**WhatsApp Template Example — Privacy Notice:**
+
+```
+Hi {{customer_name}}! Welcome to {{brand_name}}.
+
+Before we continue, here's how we handle your data:
+
+📋 What we collect: Name, phone number, order details, delivery address
+🎯 Why: To process your orders and provide customer support
+🔒 Your rights: Access, correct, or delete your data anytime
+📞 Contact our Grievance Officer: privacy@yourbrand.com
+
+Full privacy policy: {{privacy_policy_url}}
+
+Would you like to continue?
+[Yes, I understand] [Learn More]
+```
+
+This template must be submitted to Meta for approval through the WhatsApp Business API template review process. Submit it in all 22 scheduled languages you plan to support.
+
+### Stage 2: Purpose-Level Consent Collection
+
+After the privacy notice is acknowledged, collect consent for each specific processing purpose separately:
+
+**WhatsApp Template Example — Marketing Consent:**
+
+```
+{{brand_name}} would like to send you:
+
+🛍️ Weekly product offers and deals
+📦 New product launch announcements
+🎁 Exclusive discount codes
+
+Frequency: 2-4 messages per week
+You can opt out anytime by sending STOP.
+
+Would you like to receive marketing messages?
+[Yes, send me offers] [No, thanks]
+```
+
+**WhatsApp Template Example — Feedback Consent:**
+
+```
+{{brand_name}} would like to occasionally ask for your feedback on purchases to improve our products.
+
+This is separate from order updates and marketing.
+You can opt out anytime by sending STOP FEEDBACK.
+
+Would you like to participate?
+[Yes, I'll share feedback] [No, skip this]
+```
+
+Each purpose requires a separate consent interaction. Do not combine order updates, marketing, and feedback into one opt-in.
+
+### Stage 3: Consent Artifact Generation
+
+Every consent event must generate a structured artifact. Here is the data structure:
+
+```json
+{
+  "consent_artifact_id": "ca_2026_03_31_a1b2c3d4",
+  "data_principal_id": "wa_919876543210",
+  "consent_type": "explicit",
+  "purpose": "marketing_communications",
+  "purpose_description": "Weekly product offers, launch announcements, discount codes via WhatsApp",
+  "consent_given": true,
+  "consent_method": "whatsapp_interactive_button",
+  "button_text": "Yes, send me offers",
+  "whatsapp_message_id": "wamid.HBgNOTE5ODc2NTQzMjEwFQIAERgSM0E3QzYyRjY1QzUzRkQ3QQAA",
+  "language": "en",
+  "notice_version": "v2.1",
+  "timestamp": "2026-03-31T10:23:45+05:30",
+  "ip_address": null,
+  "data_fiduciary": "Your Brand Pvt Ltd",
+  "retention_period": "until_withdrawal_plus_3_years",
+  "artifact_hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
+```
+
+Key fields explained:
+- **whatsapp_message_id**: The unique message identifier from the WhatsApp Business API that links the consent to the exact conversation.
+- **notice_version**: Track which version of your consent notice was shown. If you update the notice, you may need to re-collect consent.
+- **artifact_hash**: A SHA-256 hash of the artifact contents, ensuring tamper-evidence.
+- **language**: The language in which consent was collected, critical for demonstrating compliance with the 22-language requirement.
+
+### Stage 4: Opt-Out Implementation
+
+Implement multiple opt-out mechanisms:
+
+**STOP Keyword Handler:**
+
+```
+// Pseudocode for STOP keyword processing
+function handleIncomingMessage(message) {
+  const text = message.body.trim().toUpperCase();
+
+  if (text === "STOP" || text === "UNSUBSCRIBE" || text === "RUKO") {
+    // Withdraw all marketing consent
+    withdrawConsent(message.from, "all_marketing");
+
+    // Generate withdrawal artifact
+    createWithdrawalArtifact({
+      data_principal_id: message.from,
+      withdrawal_method: "keyword_stop",
+      whatsapp_message_id: message.id,
+      timestamp: new Date().toISOString(),
+      purposes_withdrawn: ["marketing_communications", "feedback_collection"]
+    });
+
+    // Send confirmation
+    sendMessage(message.from, "You've been unsubscribed from all marketing messages. You'll still receive order-related updates. To manage specific preferences, reply MANAGE.");
+
+    // Immediately stop all queued marketing messages
+    cancelQueuedMessages(message.from, "marketing");
+  }
+
+  if (text === "STOP FEEDBACK") {
+    withdrawConsent(message.from, "feedback_collection");
+    // ... similar artifact generation
+  }
+}
+```
+
+The STOP keyword must trigger instant processing. Do not batch opt-outs for daily processing. A message sent after a STOP request is a consent violation.
+
+## What is the difference between transactional and marketing consent on WhatsApp?
+
+Transactional messages related to fulfilling a contract (order confirmations, shipping updates, payment receipts) may operate under deemed consent per Section 7 of the DPDP Act. Marketing messages (product offers, promotions, re-engagement) always require explicit consent under Section 6. The distinction determines whether you need active opt-in or can rely on the existing business relationship.
+
+Here is how to classify common WhatsApp message types:
+
+| Message Type | DPDP Classification | Consent Required | Section |
+|-------------|---------------------|-----------------|---------|
+| Order confirmation | Transactional (deemed consent) | No explicit consent needed | Section 7 |
+| Shipping/delivery update | Transactional (deemed consent) | No explicit consent needed | Section 7 |
+| Payment receipt | Transactional (deemed consent) | No explicit consent needed | Section 7 |
+| Customer support response | Transactional (deemed consent) | No explicit consent needed | Section 7 |
+| Product recommendation | Marketing | Explicit consent required | Section 6 |
+| Promotional offer/discount | Marketing | Explicit consent required | Section 6 |
+| Abandoned cart reminder | Marketing | Explicit consent required | Section 6 |
+| Feedback/review request | Marketing (debatable) | Explicit consent recommended | Section 6 |
+| Re-engagement after inactivity | Marketing | Explicit consent required | Section 6 |
+| Cross-sell/upsell message | Marketing | Explicit consent required | Section 6 |
+
+The gray areas matter. An "order shipped" message is transactional. An "order shipped — here are products you might also like" message crosses into marketing. When in doubt, obtain explicit consent. The penalty for processing without consent is up to INR 50 crore.
+
+## How do you handle multilingual consent on WhatsApp?
+
+The DPDP Rules 2025 require consent notices in all 22 scheduled languages of India. On WhatsApp, implement language detection through device locale or an explicit language selection step, then deliver consent notices and collect opt-ins in the detected language. Every consent artifact must record the language used.
+
+Implementation steps:
+
+1. **Detect language preference.** The WhatsApp Business API provides the user's device locale in the `wa_id` profile data. Map this to the nearest scheduled language. If the locale is `hi_IN`, serve Hindi. If `ta_IN`, serve Tamil.
+
+2. **Offer explicit language selection.** For users whose locale does not map cleanly, or as a first-interaction step, offer a language selector:
+
+```
+Welcome to {{brand_name}}! / {{brand_name}} में आपका स्वागत है!
+
+Please select your preferred language:
+[English] [हिन्दी] [More Languages]
+```
+
+If the user selects "More Languages," present a follow-up with the remaining scheduled languages grouped by region.
+
+3. **Prepare consent templates in all 22 languages.** Each template must be:
+   - Translated by a qualified translator (not machine-translated)
+   - Reviewed by a legal professional familiar with the language
+   - Submitted to Meta for template approval in each language
+   - Version-tracked so you know exactly which text was shown
+
+4. **Store language in the consent artifact.** The `language` field in your consent artifact is not optional. If the DPBI investigates and finds that you collected consent only in English from a Tamil-speaking user, the consent may be deemed invalid.
+
+The 22 scheduled languages are: Assamese, Bengali, Bodo, Dogri, Gujarati, Hindi, Kannada, Kashmiri, Konkani, Maithili, Malayalam, Manipuri, Marathi, Nepali, Odia, Punjabi, Sanskrit, Santali, Sindhi, Tamil, Telugu, and Urdu.
+
+For businesses finding multilingual template management complex, [KAVACH](/kavach/d2c-brands) automates template generation, translation management, and approval workflows across all 22 languages.
+
+## How do you implement Data Principal Rights (DSAR) on WhatsApp?
+
+Data principals must be able to exercise their rights under Sections 11-14 of the DPDP Act through the same channel they use to interact with your business. On WhatsApp, this means implementing keyword-triggered or menu-driven access to data access, correction, erasure, and grievance redressal directly within the chat.
+
+Here is a practical implementation:
+
+**Rights Menu Template:**
+
+```
+{{customer_name}}, as per the DPDP Act 2023, you have the right to:
+
+1️⃣ ACCESS — View all data we hold about you
+2️⃣ CORRECT — Update or fix your information
+3️⃣ DELETE — Request deletion of your data
+4️⃣ GRIEVANCE — File a complaint
+
+Reply with the number or keyword for your request.
+```
+
+**Keyword-Triggered Flows:**
+
+```
+// DSAR handler pseudocode
+function handleDSAR(message) {
+  const text = message.body.trim().toUpperCase();
+
+  switch(text) {
+    case "1":
+    case "ACCESS":
+    case "MY DATA":
+      // Verify identity via OTP to registered mobile
+      initiateOTPVerification(message.from);
+      // On verification success, compile and send data summary
+      break;
+
+    case "2":
+    case "CORRECT":
+      // Verify identity, then present editable fields
+      initiateOTPVerification(message.from);
+      break;
+
+    case "3":
+    case "DELETE":
+      // Verify identity, then initiate erasure workflow
+      initiateOTPVerification(message.from);
+      // Flag for 30-day deletion window with confirmation
+      break;
+
+    case "4":
+    case "GRIEVANCE":
+      // Connect to grievance officer or create ticket
+      createGrievanceTicket(message.from);
+      sendMessage(message.from,
+        "Your grievance has been registered (Ref: GRV-{{id}}). " +
+        "Our Grievance Officer will respond within 7 days. " +
+        "Contact: privacy@yourbrand.com"
+      );
+      break;
+  }
+}
+```
+
+Critical implementation details:
+
+1. **Identity verification is mandatory.** Before disclosing any personal data, verify the requester's identity. OTP to the registered WhatsApp number is the most practical method.
+
+2. **Response timelines.** The DPDP Rules 2025 specify response timelines for DSARs. Automate the acknowledgment (immediate) and track the fulfillment deadline.
+
+3. **Data format.** When providing data access, present information in a structured, readable format. A WhatsApp message with a link to a secure, time-limited download page works better than attempting to send all data within the chat.
+
+4. **Erasure limitations.** Explain clearly that certain data may be retained for legal obligations (GST records for 7 years, for example) even after an erasure request.
+
+## What are the most common WhatsApp consent mistakes under DPDP?
+
+The most common mistakes are bundled consent (combining transactional and marketing opt-ins), missing consent artifacts, English-only consent notices, delayed STOP processing, and failure to re-consent existing customers under DPDP-compliant terms. Each mistake creates penalty exposure.
+
+Here are the ten most frequent violations we observe:
+
+1. **Bundled consent.** "By placing an order, you agree to receive marketing messages." This violates the specificity requirement of Section 6.
+
+2. **No consent artifact.** Collecting consent but not generating a timestamped, traceable artifact. When the DPBI asks for proof, you have nothing.
+
+3. **English-only consent.** Serving consent notices only in English to users across India. Non-compliant with the 22-language requirement.
+
+4. **Delayed STOP processing.** Batching opt-out requests for end-of-day processing. Messages sent after a STOP request are sent without consent.
+
+5. **No distinction between purposes.** Using a single "opt-in" for order updates, marketing, feedback, and data sharing. Each purpose needs its own consent.
+
+6. **Missing withdrawal confirmation.** Not confirming to the user that their opt-out was processed. Users deserve confirmation that their rights were respected.
+
+7. **Legacy customer gap.** Assuming pre-DPDP opt-ins satisfy DPDP requirements. They do not, unless the original consent met all Section 6 criteria.
+
+8. **No grievance mechanism.** Providing no way for WhatsApp users to file complaints or reach a Grievance Officer through the channel.
+
+9. **Consent for list sharing.** Sharing WhatsApp contact lists with third-party marketing partners without separate consent for the sharing purpose.
+
+10. **Dark patterns in opt-out.** Making the "Yes, subscribe" button prominent and green while making "No thanks" small and gray. Consent must be a genuine, uninfluenced choice.
+
+## How do you migrate existing WhatsApp subscribers to DPDP-compliant consent?
+
+Migrating existing subscribers requires a structured re-consent campaign where every current contact receives a DPDP-compliant consent notice and must affirmatively opt in again for each processing purpose. Contacts who do not re-consent must be moved to transactional-only communication.
+
+The migration process:
+
+1. **Audit your current subscriber base.** Identify how consent was originally collected, what notice was provided, and what artifacts exist. If your original consent meets all Section 6 requirements (unlikely for most businesses), you may not need to re-consent.
+
+2. **Segment subscribers by risk.** Prioritize re-consent for subscribers where the original consent was weakest (no artifacts, bundled consent, English-only).
+
+3. **Design the re-consent campaign.** Send a DPDP-compliant consent notice with clear purpose descriptions and interactive opt-in buttons. Be transparent about why you are asking:
+
+```
+Hi {{name}}! India's new data protection law (DPDP Act) requires
+us to update how we manage your consent.
+
+We'd like to continue sending you:
+🛍️ Product offers and deals (2-3/week)
+
+Your data is handled per our updated privacy policy:
+{{privacy_url}}
+
+Would you like to keep receiving offers?
+[Yes, keep sending] [No, unsubscribe]
+```
+
+4. **Handle non-responses.** Contacts who do not respond to re-consent requests within a reasonable period (14-30 days, with 2-3 reminders) must be treated as non-consented and moved to transactional-only status.
+
+5. **Accept list shrinkage.** You will lose subscribers. A 30-50% re-consent rate is typical. A smaller, consented list is both legally compliant and commercially more valuable than a large, non-consented list.
+
+6. **Generate artifacts for all re-consent.** Every re-consent event must produce a proper consent artifact, exactly as if it were a new subscriber.
+
+For businesses managing this migration across large subscriber bases, [KAVACH](/kavach) provides automated re-consent campaign management with built-in artifact generation and multilingual template support.
+
+## What tools and infrastructure do you need for compliant WhatsApp consent?
+
+A DPDP-compliant WhatsApp consent infrastructure requires five components: WhatsApp Business API access, a consent management layer, a consent artifact database, multilingual template management, and a DSAR response system. Building this from scratch takes 3-6 months; using a purpose-built platform reduces this to weeks.
+
+| Component | Build In-House | Use Platform (e.g., KAVACH) |
+|-----------|---------------|---------------------------|
+| WhatsApp Business API setup | 2-4 weeks | Included |
+| Consent flow logic | 4-8 weeks | Pre-built |
+| Multilingual templates (22 languages) | 8-12 weeks | Pre-built, legally reviewed |
+| Consent artifact database | 2-4 weeks | Included |
+| DSAR response workflows | 4-6 weeks | Pre-built |
+| STOP keyword processing | 1-2 weeks | Included |
+| Audit and reporting dashboard | 4-6 weeks | Included |
+| **Total implementation** | **25-42 weeks** | **2-4 weeks** |
+
+Whether you build or buy, ensure your system meets these non-negotiable requirements:
+
+1. **Sub-second STOP processing.** Opt-out keywords must trigger immediate consent withdrawal, not queue for later processing.
+2. **Immutable consent artifacts.** Once generated, artifacts cannot be modified. Use append-only storage with cryptographic hashing.
+3. **Complete audit trail.** Every consent event, from initial notice to final withdrawal, must be traceable to a specific WhatsApp message ID and timestamp.
+4. **Language-aware routing.** The system must detect and serve the correct language for every interaction.
+5. **Scalability.** If your business grows from 10,000 to 10 lakh WhatsApp contacts, the consent infrastructure must scale without compliance gaps.
+
+The compliance deadline is fixed. Your implementation window is closing. Start building your WhatsApp consent infrastructure today.

@@ -5,25 +5,27 @@ import { getAllGuides } from "@/lib/mdx";
 import { getAllCaseStudies } from "@/lib/mdx";
 import { INDIAN_STATES } from "@/data/states";
 import { INDUSTRIES } from "@/data/industries";
+import { comparisons } from "@/data/comparisons";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SITE_CONFIG.url;
+  const now = new Date().toISOString();
 
-  // Static pages
+  // Static pages with proper lastModified
   const staticPages: MetadataRoute.Sitemap = [
-    { url: baseUrl, changeFrequency: "daily", priority: 1.0 },
-    { url: `${baseUrl}/kavach`, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${baseUrl}/netra`, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${baseUrl}/pricing`, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${baseUrl}/about`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${baseUrl}/contact`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${baseUrl}/blog`, changeFrequency: "daily", priority: 0.8 },
-    { url: `${baseUrl}/guides`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/compare`, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${baseUrl}/case-studies`, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${baseUrl}/changelog`, changeFrequency: "weekly", priority: 0.5 },
-    { url: `${baseUrl}/playground`, changeFrequency: "monthly", priority: 0.7 },
+    { url: baseUrl, lastModified: now, changeFrequency: "daily", priority: 1.0 },
+    { url: `${baseUrl}/kavach`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/netra`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/pricing`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+    { url: `${baseUrl}/guides`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/tools`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/compare`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${baseUrl}/case-studies`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${baseUrl}/changelog`, lastModified: now, changeFrequency: "weekly", priority: 0.5 },
+    { url: `${baseUrl}/playground`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 
   // Vertical landing pages
@@ -38,6 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/netra/insurance",
   ].map((path) => ({
     url: `${baseUrl}${path}`,
+    lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.8,
   }));
@@ -51,6 +54,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/gstin-lookup",
   ].map((path) => ({
     url: `${baseUrl}${path}`,
+    lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
@@ -79,9 +83,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
+  // Comparison pages
+  const comparisonPages: MetadataRoute.Sitemap = comparisons.map((c) => ({
+    url: `${baseUrl}/compare/${c.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
   // State DPDP guides
   const statePages: MetadataRoute.Sitemap = INDIAN_STATES.map((state) => ({
     url: `${baseUrl}/guides/dpdp/state/${state.slug}`,
+    lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.5,
   }));
@@ -89,6 +102,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Industry DPDP guides
   const industryPages: MetadataRoute.Sitemap = INDUSTRIES.map((industry) => ({
     url: `${baseUrl}/guides/dpdp/industry/${industry.slug}`,
+    lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
@@ -100,6 +114,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...posts,
     ...guides,
     ...caseStudies,
+    ...comparisonPages,
     ...statePages,
     ...industryPages,
   ];

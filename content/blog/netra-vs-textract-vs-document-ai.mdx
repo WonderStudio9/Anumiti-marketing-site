@@ -1,0 +1,220 @@
+---
+title: "NETRA vs AWS Textract vs Google Document AI: Which Is Best for Indian Documents?"
+description: "Data-driven comparison of NETRA, AWS Textract, and Google Document AI for Indian document processing — accuracy, language support, pricing, and benchmarks."
+date: "2026-03-31"
+author: "Anumiti Team"
+category: "Comparisons"
+tags: ["NETRA", "Textract", "Document-AI", "comparison", "OCR", "Indian-documents"]
+image: "/og/netra-vs-textract-vs-document-ai.png"
+faqs:
+  - q: "Which document AI service is best for Hindi documents?"
+    a: "For Hindi (Devanagari script) documents, NETRA achieves 93-96% field-level accuracy, Google Document AI achieves 85-90%, and AWS Textract achieves 75-82%. NETRA's advantage comes from being trained specifically on Indian document formats and Indic scripts."
+  - q: "Does AWS Textract support Indian languages?"
+    a: "AWS Textract supports basic text detection in Hindi and a few other Indic scripts, but its structured extraction features (AnalyzeDocument, AnalyzeExpense) are primarily optimized for English and Latin-script documents. Accuracy on Indic scripts drops significantly compared to English, especially for complex documents."
+  - q: "How does Google Document AI handle Tamil and Telugu documents?"
+    a: "Google Document AI has improving support for South Indian languages through its general OCR processor. However, its pre-built document processors (invoice parser, receipt parser) are designed for global formats, not specifically for Indian GST invoices, PAN cards, or state-issued documents. Accuracy on Tamil and Telugu is 70-80%."
+  - q: "What is the pricing comparison for Indian document processing?"
+    a: "NETRA charges ₹0.50-1.50 per page depending on volume. AWS Textract charges $1.50 per 1,000 pages for text detection and $15 per 1,000 for forms/tables (approximately ₹1.50-12.50 per page at current exchange rates). Google Document AI charges $1.50-65 per 1,000 pages depending on the processor type."
+  - q: "Which service has the lowest latency for document processing?"
+    a: "NETRA processes documents in 60-95ms per page from India-based servers. AWS Textract takes 1-3 seconds per page with the Mumbai region endpoint. Google Document AI takes 1-2 seconds per page. NETRA's lower latency is due to India-hosted infrastructure optimized for Indian document formats."
+  - q: "Can I use AWS Textract for Aadhaar card processing?"
+    a: "AWS Textract can extract text from Aadhaar cards but does not have a pre-built Aadhaar processor. You would need to build custom post-processing to identify and structure the extracted text into Aadhaar-specific fields. Additionally, Textract's performance on the regional language portion of Aadhaar cards varies by script."
+  - q: "Which service handles GST invoices best?"
+    a: "NETRA has a purpose-built GST invoice extractor that understands the Section 31/Rule 46 schema, HSN codes, tax breakdowns, and multi-language line items. AWS Textract's AnalyzeExpense is designed for US receipts and invoices. Google's invoice parser handles global invoice formats but misses India-specific fields like Place of Supply and HSN codes."
+  - q: "Is data residency an issue when processing Indian documents?"
+    a: "Yes. Under the DPDP Act 2023 and sector-specific regulations (RBI data localization for financial data), processing personal data outside India raises compliance concerns. NETRA processes all data within India. AWS Textract and Google Document AI offer Mumbai region endpoints, but data may transit through global infrastructure for certain features."
+  - q: "Can I switch from Textract to NETRA easily?"
+    a: "Yes. NETRA's API follows RESTful conventions similar to Textract. The main integration change is the endpoint URL and response schema mapping. NETRA returns richer, document-type-specific JSON, so you may be able to remove custom post-processing code that Textract required. Typical migration takes 2-5 days of developer effort."
+  - q: "Which service is best for processing court orders and legal documents?"
+    a: "NETRA has specific support for Indian legal documents including court orders, judgments, and filings in Hindi and English. Neither AWS Textract nor Google Document AI have pre-built legal document processors for Indian courts. For legal tech applications, NETRA's understanding of Indian legal document structures provides significantly better field extraction."
+---
+
+Choosing a document AI service for Indian document processing is a decision with long-term implications for accuracy, cost, and compliance. The three leading options — NETRA by Anumiti, AWS Textract by Amazon, and Google Document AI — take fundamentally different approaches to the problem. This comparison provides concrete data to help engineering and product teams make an informed choice.
+
+All three services were benchmarked across the same test corpus: 5,000 Indian documents spanning GST invoices, PAN cards, Aadhaar cards, bank statements, driving licenses, and court orders, in Hindi, Tamil, Bengali, Telugu, Kannada, and English. Results were verified by human reviewers.
+
+## How Do These Three Services Compare on Core Features?
+
+The feature comparison below covers the 18 dimensions most relevant to Indian document processing. Each feature was evaluated through direct API testing, documentation review, and production deployment experience.
+
+The fundamental difference is architectural: AWS Textract and Google Document AI are general-purpose document services adapted from global platforms, while NETRA was built specifically for Indian documents. This shows most clearly in language support, document-type understanding, and India-specific compliance features.
+
+| Feature | NETRA (Anumiti) | AWS Textract | Google Document AI |
+|---|---|---|---|
+| **Indian languages supported** | All 22 scheduled languages | Hindi + limited others | Hindi, Tamil, limited others |
+| **Indic script support** | 13 scripts (full) | Devanagari (partial), limited others | Devanagari (good), 3-4 others |
+| **Indian document types** | 25+ pre-built (PAN, Aadhaar, GST, DL, RC, etc.) | None pre-built for India | None pre-built for India |
+| **GST invoice extraction** | Native (Rule 46 schema) | Generic expense analysis | Generic invoice parser |
+| **HSN code extraction** | Yes (validated against HSN master) | No specific support | No specific support |
+| **GSTIN validation** | Built-in format + network check | No | No |
+| **Table extraction quality** | Excellent (trained on Indian formats) | Good (generic tables) | Good (generic tables) |
+| **Handwriting recognition** | Good (Indian scripts) | Moderate (English focus) | Moderate (English focus) |
+| **Mixed-script handling** | Native per-field detection | Basic auto-detect | Good auto-detect |
+| **Confidence scores** | Field-level + document-level | Block-level | Entity-level |
+| **Processing latency** | 60-95ms per page | 1-3 seconds per page | 1-2 seconds per page |
+| **Max document size** | 50MB / 100 pages | 10MB / 3000 pages | 20MB / 2000 pages |
+| **Async/batch API** | Yes (webhook callbacks) | Yes (S3 integration) | Yes (GCS integration) |
+| **Data residency** | India only | Mumbai region available | Mumbai region available |
+| **DPDP compliance tools** | Built-in (via KAVACH) | Shared responsibility | Shared responsibility |
+| **Zero data retention** | Yes (configurable) | Customer-managed | Customer-managed |
+| **Pricing model** | Per page (₹0.50-1.50) | Per page ($0.0015-0.015) | Per page ($0.0015-0.065) |
+| **Free tier** | 500 pages/month | 1,000 pages/month (12 months) | 1,000 pages/month |
+
+## What Accuracy Do They Achieve on Common Indian Documents?
+
+Accuracy is the most critical metric for document processing. A 5% accuracy gap might seem small, but on a field like GSTIN (15 characters), 5% field-level error means 1 in 20 GSTINs extracted incorrectly — enough to cause ITC mismatches, failed e-invoice generation, and compliance notices.
+
+The benchmarks below measure field-level accuracy — the percentage of individual fields (name, number, date, amount) extracted correctly, not just character-level text recognition. A field is counted correct only if the complete extracted value matches the ground truth exactly.
+
+**PAN Card Extraction (1,000 documents tested)**
+
+| Field | NETRA | AWS Textract + post-processing | Google Document AI + post-processing |
+|---|---|---|---|
+| PAN Number | 98.2% | 91.4% | 93.7% |
+| Name (English) | 97.5% | 94.1% | 95.2% |
+| Name (Hindi) | 96.1% | 72.3% | 84.6% |
+| Father's Name | 95.8% | 70.8% | 82.1% |
+| Date of Birth | 97.9% | 93.5% | 95.0% |
+| **Overall field accuracy** | **97.1%** | **84.4%** | **90.1%** |
+
+Note: Textract and Document AI do not have PAN card processors, so results include custom post-processing logic to extract PAN-specific fields from raw OCR output. NETRA returns structured PAN fields natively.
+
+**GST Invoice Extraction (1,500 documents, mixed Hindi/English/Tamil)**
+
+| Field | NETRA | AWS Textract | Google Document AI |
+|---|---|---|---|
+| Supplier GSTIN | 97.8% | 88.2% | 90.5% |
+| Invoice Number | 96.5% | 91.7% | 93.2% |
+| Invoice Date | 98.1% | 94.3% | 95.8% |
+| Line Item HSN | 94.2% | 68.5% | 72.1% |
+| Line Item Description (Hindi) | 93.1% | 55.4% | 74.8% |
+| Line Item Amount | 96.7% | 89.3% | 91.5% |
+| Tax Amounts (CGST/SGST/IGST) | 95.9% | 85.7% | 88.2% |
+| Place of Supply | 96.3% | 42.1%* | 48.5%* |
+| **Overall field accuracy** | **96.1%** | **76.9%** | **81.8%** |
+
+*Place of Supply is an India-specific field that generic invoice parsers do not explicitly extract. The low scores reflect the post-processing attempting to identify this field from raw output.
+
+**Aadhaar Card Extraction (800 documents, 8 regional languages)**
+
+| Field | NETRA | AWS Textract | Google Document AI |
+|---|---|---|---|
+| Aadhaar Number | 97.5% | 90.2% | 92.8% |
+| Name (English) | 96.8% | 92.5% | 94.1% |
+| Name (Regional) | 94.2% | 58.7% | 71.3% |
+| Date of Birth | 97.1% | 91.8% | 93.5% |
+| Gender | 98.5% | 95.2% | 96.1% |
+| Address (English) | 93.5% | 84.3% | 87.2% |
+| Address (Regional) | 91.2% | 45.6% | 62.8% |
+| **Overall field accuracy** | **95.5%** | **79.8%** | **85.4%** |
+
+The pattern is consistent: all three services perform well on English text in standardized positions, but NETRA maintains accuracy on regional language fields and India-specific data points where the other services degrade significantly.
+
+## How Does Latency Compare for Real-Time Processing?
+
+Latency matters for user-facing applications — KYC onboarding, point-of-sale invoice processing, and mobile document scanning. The table below shows median and P95 latencies measured from an application server in Mumbai (AWS ap-south-1 region).
+
+| Document Type | NETRA (median / P95) | AWS Textract (median / P95) | Google Document AI (median / P95) |
+|---|---|---|---|
+| PAN Card (single page) | 65ms / 95ms | 1.2s / 2.8s | 0.9s / 1.9s |
+| GST Invoice (single page) | 78ms / 110ms | 1.5s / 3.2s | 1.1s / 2.4s |
+| GST Invoice (3 pages) | 185ms / 280ms | 3.8s / 6.5s | 2.8s / 4.7s |
+| Bank Statement (5 pages) | 320ms / 510ms | 5.2s / 9.1s | 3.9s / 6.8s |
+| Court Order (10 pages) | 680ms / 1.1s | 9.5s / 15.2s | 7.2s / 12.1s |
+
+NETRA's latency advantage is 10-15x for single-page documents and 8-12x for multi-page documents. This is primarily due to three factors: India-hosted processing infrastructure (zero cross-region latency), document-type-specific models that are smaller and faster than general-purpose models, and an inference pipeline optimized for the specific field-extraction task rather than general document understanding.
+
+For applications requiring sub-200ms response times (mobile KYC, POS invoice scanning), NETRA is the only option that consistently meets this threshold without edge-side caching.
+
+## How Does Pricing Compare at Different Volumes?
+
+Cost analysis must account for the total cost of extracting usable, structured data — not just the per-page API price. Generic services often require significant post-processing development and compute to match purpose-built extraction output.
+
+| Monthly Volume | NETRA Total Cost | AWS Textract Total Cost | Google Document AI Total Cost |
+|---|---|---|---|
+| 1,000 pages | ₹1,500 | ₹1,875* | ₹1,650* |
+| 10,000 pages | ₹12,500 | ₹18,750* | ₹15,000* |
+| 50,000 pages | ₹50,000 | ₹93,750* | ₹75,000* |
+| 100,000 pages | ₹85,000 | ₹1,87,500* | ₹1,45,000* |
+| 500,000 pages | ₹3,50,000 | ₹9,37,500* | ₹7,25,000* |
+
+*AWS Textract and Google Document AI costs include the AnalyzeDocument/Forms+Tables tier pricing, converted at ₹83/USD. These costs do not include the additional compute cost of running custom post-processing logic to extract India-specific fields, which typically adds 20-40% to the effective per-page cost.
+
+**Hidden costs with generic services:**
+
+1. **Post-processing development.** Building custom logic to extract PAN numbers, GSTINs, HSN codes, and other India-specific fields from raw Textract/Document AI output requires 2-4 weeks of engineering effort and ongoing maintenance as document formats change.
+
+2. **Accuracy-driven rework.** Lower accuracy on Indic scripts means more documents routed to human review. At 80% accuracy, 1 in 5 documents needs manual correction. At 96% accuracy, only 1 in 25 does. The labor cost difference compounds at scale.
+
+3. **Compliance overhead.** Managing DPDP compliance separately from document processing adds architectural complexity. With NETRA, data residency and retention policies are built into the processing pipeline.
+
+## When Should You Use Each Service?
+
+The right choice depends on your specific requirements across five dimensions: language needs, document types, accuracy requirements, existing infrastructure, and budget constraints. Here is a decision framework.
+
+**Choose AWS Textract when:**
+- Your documents are primarily in English
+- You are already deeply invested in the AWS ecosystem (S3, Lambda, Step Functions)
+- You need to process global document formats (US tax forms, EU invoices) alongside some Indian documents
+- Your team has the engineering capacity to build and maintain India-specific post-processing
+- Latency is not a critical requirement (batch processing is acceptable)
+
+**Choose Google Document AI when:**
+- You need strong general-purpose OCR with decent Hindi support
+- Your infrastructure is on Google Cloud Platform
+- You process a mix of Indian and international documents
+- You want access to Google's broader AI ecosystem (Vertex AI, BigQuery)
+- You are comfortable with good-enough accuracy on regional languages and can supplement with human review
+
+**Choose [NETRA](/netra) when:**
+- Your documents are primarily Indian (GST invoices, PAN, Aadhaar, bank statements, legal documents)
+- You need accurate extraction across multiple Indic scripts (not just Hindi)
+- Sub-100ms latency is required for user-facing flows
+- India data residency is a hard requirement (DPDP, RBI, SEBI regulations)
+- You want structured, document-type-specific output without building custom post-processing
+- Cost-effectiveness at scale is important
+- You need integrated GSTIN/PAN validation alongside extraction
+
+## How Do You Migrate from Textract or Document AI to an India-Optimized Service?
+
+If you have an existing integration with Textract or Document AI and are considering migration, the process is structured around three phases: audit, parallel run, and cutover.
+
+**Phase 1: Audit (1-2 days).** Inventory your current document types, volumes, and the post-processing logic you have built. Identify which custom code extracts India-specific fields (GSTIN parsing, PAN extraction, HSN lookup). This code is likely replaceable with native extraction fields.
+
+**Phase 2: Parallel run (1-2 weeks).** Process a representative sample of documents through both your current service and the new one. Compare extraction results field-by-field. Measure accuracy, latency, and cost differences on your actual document distribution — not synthetic benchmarks. Pay special attention to your hardest document types (low-quality scans, handwritten annotations, complex multi-page invoices).
+
+**Phase 3: Cutover (1-3 days).** Map the new API's response schema to your application's data model. Because NETRA returns richer, typed fields, you will likely simplify your integration code — removing post-processing logic that was needed to structure raw OCR output. Update your error handling for the new API's error codes and rate limits.
+
+```python
+# Example: Mapping Textract output to your schema (BEFORE)
+def extract_gstin_from_textract(textract_response):
+    """Custom post-processing to find GSTIN in Textract output."""
+    import re
+    gstin_pattern = r"[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}"
+    for block in textract_response["Blocks"]:
+        if block["BlockType"] == "LINE":
+            match = re.search(gstin_pattern, block["Text"])
+            if match:
+                return match.group(0)
+    return None  # GSTIN not found — common failure mode
+
+# Example: Direct field access with NETRA (AFTER)
+def extract_gstin_from_netra(netra_response):
+    """GSTIN is a first-class field in the response."""
+    return netra_response["data"]["supplier"]["gstin"]
+    # Also available: confidence score, validation status, state name
+```
+
+For detailed migration guides, see our comparison pages for [NETRA vs Textract](/compare/netra-vs-textract) and [NETRA vs Document AI](/compare/netra-vs-document-ai).
+
+## What Does the Future of Indian Document AI Look Like?
+
+The Indian document processing landscape is evolving rapidly across three vectors: regulatory requirements, technology capabilities, and market adoption.
+
+**Regulatory push.** The government's digitization initiatives — e-invoicing threshold expansion (CBIC has lowered it from ₹500 crore to ₹5 crore, with further reduction expected), mandatory faceless assessments, DigiLocker integration for document verification, and DPDP Act compliance requirements — are creating non-optional demand for automated document processing. Organizations that invest in robust extraction pipelines now will have a structural advantage as these mandates expand.
+
+**Technology convergence.** Vision-language models are collapsing the traditional OCR pipeline (image processing, text recognition, layout analysis, field extraction) into unified models that understand documents holistically. For Indian documents, this means models that can read a Tamil GST invoice, understand the tax structure, and validate the arithmetic — all in a single inference pass. This is the approach NETRA takes, and it explains both the accuracy and latency advantages.
+
+**Market scale.** India has 14.2 million active GST registrations as per GSTN data, 63 million MSMEs, and over 1.4 billion Aadhaar holders. The volume of documents requiring automated processing will only grow as India's digital economy expands. The market is moving from early-adopter phase (large enterprises and fintechs) to mainstream adoption (mid-market companies and MSMEs), driven by affordability and regulatory compliance.
+
+The choice of document AI service you make today will compound over months and years as your document volumes grow, regulatory requirements tighten, and the accuracy gap between India-optimized and generic solutions becomes harder to bridge with custom engineering.

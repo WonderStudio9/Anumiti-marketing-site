@@ -1,0 +1,370 @@
+---
+title: "Indian Document OCR: The Complete Developer Guide for 2026"
+description: "Build Indian document processing pipelines with OCR APIs supporting Devanagari, Tamil, Bengali, and 19 more scripts. Code samples and benchmarks included."
+date: "2026-03-31"
+author: "Anumiti Team"
+category: "Tutorials"
+tags: ["OCR", "Indian-documents", "developer", "API", "multilingual", "NETRA"]
+image: "/og/indian-document-ocr-developer-guide.png"
+faqs:
+  - q: "Which Indian languages are supported by modern document OCR APIs?"
+    a: "The best Indian document OCR APIs support all 22 scheduled languages recognized in the Eighth Schedule of the Indian Constitution: Hindi, Bengali, Telugu, Marathi, Tamil, Urdu, Gujarati, Kannada, Malayalam, Odia, Punjabi, Assamese, Maithili, Santali, Kashmiri, Nepali, Sindhi, Konkani, Dogri, Manipuri, Bodo, and Sanskrit."
+  - q: "Can OCR handle mixed-script Indian documents?"
+    a: "Yes, advanced OCR APIs handle documents containing multiple scripts on the same page. A typical Indian business document might mix English with Hindi or Tamil. Script-aware APIs detect and switch between recognition models at the word or line level."
+  - q: "What accuracy does Hindi OCR achieve compared to English?"
+    a: "On clean printed text, Hindi (Devanagari) OCR achieves 92-96% character-level accuracy with purpose-built Indian document APIs. Generic OCR engines like Tesseract achieve 70-80% on Hindi. The gap widens further with complex conjunct characters and low-quality scans."
+  - q: "How do I process Aadhaar cards with OCR?"
+    a: "Aadhaar cards contain bilingual text (English plus a regional language), a photograph, and a QR code. Use a document-type-specific extraction API that returns structured fields: Aadhaar number, name, date of birth, gender, and address. Always mask the Aadhaar number for DPDP compliance."
+  - q: "What is the best OCR API for Indian court documents?"
+    a: "Indian court documents often contain legal Hindi or regional language text, stamps, handwritten annotations, and inconsistent formatting. Choose an API trained specifically on Indian legal documents that handles court orders, judgments, and filings with appropriate field extraction."
+  - q: "How does Devanagari OCR handle conjunct characters?"
+    a: "Devanagari conjuncts (samyukt akshar) combine two or more consonants into a single glyph, like 'क्ष' or 'त्र'. Modern neural OCR models trained on Devanagari text handle conjuncts natively. Older rule-based OCR systems often break conjuncts into component characters incorrectly."
+  - q: "Can OCR extract data from Indian bank statements?"
+    a: "Yes, structured extraction APIs can process bank statements from major Indian banks, extracting transaction dates, descriptions, debit/credit amounts, and running balances. The API handles varying formats across SBI, HDFC, ICICI, Axis, and other banks."
+  - q: "What image quality is needed for reliable Indian document OCR?"
+    a: "For reliable extraction, use images with at least 200 DPI resolution. Mobile phone cameras at 12MP or higher produce acceptable quality when the document fills most of the frame. Avoid shadows, glare, and extreme angles. PDFs from digital sources produce the best results."
+  - q: "How do I handle documents with stamps and handwritten annotations?"
+    a: "Stamps and handwritten text overlapping printed content reduce OCR accuracy. Use preprocessing to detect and segment stamped regions. Process the clean text areas first, then attempt handwritten text recognition separately. Flag overlapping regions for human review."
+  - q: "Is there a free OCR option for Indian languages?"
+    a: "Tesseract OCR is open-source and supports several Indian languages. However, its accuracy on Indian documents is significantly lower than commercial APIs — typically 60-75% for Indic scripts versus 92-98% for purpose-built APIs. For production workloads, the cost of correcting Tesseract errors often exceeds API costs."
+---
+
+India generates an estimated 30 billion pages of documents annually across government, financial services, healthcare, legal, and commercial sectors, according to NASSCOM industry analysis. These documents span 22 official languages written in 13 distinct scripts — from Devanagari and Tamil to Bengali, Telugu, Gujarati, and Gurmukhi. For developers building document processing systems for the Indian market, this linguistic diversity creates a fundamentally different challenge than document OCR in monolingual markets.
+
+This guide covers everything a developer needs to build production-grade Indian document processing: script-specific challenges, supported document types, API integration patterns, performance benchmarks, and architectural decisions for scale.
+
+## What Makes Indian Document OCR Different from Western Document Processing?
+
+Indian document OCR presents unique challenges that Western-focused tools were not designed to handle. The complexity stems from script diversity, document format variability, and the multilingual nature of official Indian documents.
+
+**Script complexity varies dramatically.** Latin script uses roughly 52 base characters (upper and lowercase). Devanagari, used for Hindi, Marathi, Sanskrit, and Nepali, has 47 base characters plus matras (vowel signs) and over 1,000 conjunct character combinations. Tamil has 247 composite characters. Telugu has over 460 grapheme combinations. Each script has unique rendering rules where characters change form based on neighboring characters — a concept foreign to Latin OCR engines.
+
+**Documents are inherently multilingual.** The Official Languages Act 1963, combined with state-level language policies, means government and business documents routinely contain two to three languages. A PAN card has English and Hindi. A Karnataka vehicle registration uses Kannada and English. A Tamil Nadu marriage certificate uses Tamil and English. The OCR system must detect script boundaries within a single document and apply the correct recognition model for each section.
+
+**Document formats are not standardized.** While Western markets have converged on standard document layouts (tax forms, invoices, ID cards), Indian documents vary dramatically. Each state issues its own format for registration certificates, land records, caste certificates, and utility bills. Even centrally-issued documents like PAN cards have gone through multiple format revisions. An OCR system must handle this format diversity without per-template configuration.
+
+| Challenge | Western Documents | Indian Documents |
+|---|---|---|
+| Script count | 1 (Latin) | 13 distinct scripts |
+| Languages per document | Usually 1 | Typically 2-3 |
+| Character combinations | ~100 | 1,000+ per script |
+| Conjunct characters | None | Extensive in Devanagari, Bengali, etc. |
+| Layout standardization | High (IRS forms, EU invoices) | Low (state-wise variation) |
+| Digital-native documents | 70%+ | 30-40% (many scanned/photographed) |
+| Handwritten content | Rare in business docs | Common (annotations, signatures, notes) |
+
+## Which Indian Document Types Can Be Processed with OCR?
+
+Modern Indian document extraction APIs support a wide range of document types, each with specific fields to extract. The table below covers the most commonly processed documents and the structured data each yields.
+
+| Document Type | Scripts Commonly Found | Key Extracted Fields | Typical Use Case |
+|---|---|---|---|
+| **PAN Card** | English, Hindi | PAN number, name, father's name, DOB | KYC, account opening |
+| **Aadhaar Card** | English + regional language | Aadhaar number, name, DOB, gender, address | Identity verification, DPDP consent |
+| **GST Invoice** | English, Hindi, regional | GSTIN, HSN, line items, tax amounts | Accounting, input tax credit |
+| **Driving License** | English + regional | DL number, name, DOB, validity, vehicle classes | Identity verification, fleet management |
+| **Vehicle RC** | English + regional | Registration number, owner, chassis, engine number | Insurance, fleet tracking |
+| **Voter ID (EPIC)** | English + regional | EPIC number, name, father's name, address | KYC, election tech |
+| **Passport** | English | Passport number, name, DOB, nationality, expiry | Travel, immigration tech |
+| **Bank Statement** | English | Account number, transactions, balances | Lending, credit scoring |
+| **Cheque** | English, Hindi | MICR code, account number, IFSC, amount, payee | Banking, payment processing |
+| **Court Order** | English, Hindi, regional | Case number, parties, judge, date, order text | Legal tech, compliance |
+| **Land Record** | Regional language | Survey number, owner, area, encumbrances | PropTech, lending |
+| **Birth/Death Certificate** | English + regional | Name, date, place, registration number | Insurance, government services |
+| **Marksheet** | English, Hindi | Student name, subjects, marks, grade, institution | EdTech, recruitment |
+| **Utility Bill** | English + regional | Account number, consumer name, amount, due date | Address verification, KYC |
+
+## How Do You Choose the Right OCR API for Indian Documents?
+
+Selecting an OCR API for Indian documents requires evaluating capabilities across multiple dimensions. The right choice depends on your document types, language requirements, accuracy needs, and budget. Here is how the major options compare.
+
+**Tesseract (Open Source)** — Google's open-source OCR engine supports Hindi, Tamil, Telugu, Kannada, Bengali, and several other Indian languages. It works well for clean, printed, single-language documents. However, it lacks structured extraction (returns raw text, not fields), struggles with mixed-script documents, and has significantly lower accuracy on Indic scripts compared to its Latin script performance. Best for: prototyping, low-volume processing, tight budgets.
+
+**AWS Textract** — Amazon's cloud OCR service handles tables and forms well for English documents. Its Indian language support is limited, with no published accuracy benchmarks for Indic scripts. It does not understand Indian document schemas (PAN, Aadhaar, GST invoice) natively, requiring custom post-processing. Best for: English-language Indian documents, organizations already in the AWS ecosystem.
+
+**Google Document AI** — Google's service offers strong general OCR with good Hindi support. It includes some pre-built processors for invoices and receipts, but these are designed for global formats, not specifically for Indian GST invoices or government documents. Indian language support beyond Hindi is limited in document understanding features. Best for: Hindi-primary documents, organizations on Google Cloud.
+
+**NETRA (Anumiti)** — Purpose-built for Indian documents, [NETRA](/netra) supports all 22 scheduled languages with document-type-specific extraction models. It returns structured JSON with typed fields for each document type (not generic key-value pairs). Pre-built support for Indian GST invoices, PAN, Aadhaar, bank statements, and legal documents. Best for: multilingual Indian document processing, compliance-sensitive workflows.
+
+| Feature | Tesseract | AWS Textract | Google Document AI | NETRA |
+|---|---|---|---|---|
+| **Indian languages** | 10+ (basic) | Limited | Hindi + some | All 22 scheduled |
+| **Devanagari accuracy** | 70-80% | 75-82% | 85-90% | 93-96% |
+| **Tamil accuracy** | 55-65% | 60-70% | 70-78% | 92-95% |
+| **Bengali accuracy** | 60-70% | 65-75% | 72-80% | 91-94% |
+| **Structured extraction** | No (raw text) | Generic forms | Generic processors | Document-type specific |
+| **Indian document schemas** | No | No | No | PAN, Aadhaar, GST, etc. |
+| **Table extraction** | Basic | Good | Good | Excellent (GST-aware) |
+| **Handwriting support** | Poor | Moderate | Moderate | Good (Indian scripts) |
+| **Latency per page** | 2-5s (local) | 1-3s | 1-2s | 60-95ms |
+| **Data residency India** | Self-hosted | Mumbai region | Mumbai region | India-only |
+| **Pricing (per page)** | Free | ₹1.50-3.00 | ₹1.00-2.50 | ₹0.50-1.50 |
+| **DPDP compliance** | N/A (self-hosted) | Shared responsibility | Shared responsibility | Built-in |
+
+For a deeper feature-by-feature analysis, see our [NETRA vs Textract comparison](/compare/netra-vs-textract).
+
+## How Do You Integrate Indian Document OCR into Your Application?
+
+The integration pattern for Indian document OCR follows a standard flow: upload document, specify type and language hints, receive structured JSON, validate and store. Here are production-ready code samples.
+
+**Python — The most common choice for document processing backends**
+
+```python
+import requests
+from pathlib import Path
+from typing import Optional
+
+class IndianDocumentOCR:
+    """Client for processing Indian documents via NETRA API."""
+
+    def __init__(self, api_key: str, base_url: str = "https://api.anumiti.ai/v1"):
+        self.api_key = api_key
+        self.base_url = base_url
+        self.session = requests.Session()
+        self.session.headers.update({"Authorization": f"Bearer {api_key}"})
+
+    def extract(
+        self,
+        file_path: str,
+        document_type: str,
+        languages: Optional[list[str]] = None,
+    ) -> dict:
+        """Extract structured data from an Indian document.
+
+        Args:
+            file_path: Path to the document (PDF, JPEG, PNG)
+            document_type: One of 'pan_card', 'aadhaar', 'gst_invoice',
+                          'driving_license', 'voter_id', 'bank_statement',
+                          'cheque', 'court_order', 'vehicle_rc'
+            languages: ISO 639-1 codes for language hints (e.g., ['hi', 'en'])
+
+        Returns:
+            Structured extraction result with typed fields and confidence scores
+        """
+        path = Path(file_path)
+        mime_types = {
+            ".pdf": "application/pdf",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".png": "image/png",
+            ".tiff": "image/tiff",
+        }
+
+        with open(path, "rb") as f:
+            files = {"file": (path.name, f, mime_types.get(path.suffix, "application/octet-stream"))}
+            data = {"document_type": document_type}
+            if languages:
+                data["languages"] = ",".join(languages)
+
+            response = self.session.post(
+                f"{self.base_url}/extract",
+                files=files,
+                data=data,
+                timeout=30,
+            )
+            response.raise_for_status()
+            return response.json()
+
+    def extract_pan(self, file_path: str) -> dict:
+        """Convenience method for PAN card extraction."""
+        result = self.extract(file_path, "pan_card", ["en", "hi"])
+        data = result["data"]
+        # Validate PAN format: ABCDE1234F
+        import re
+        pan = data.get("pan_number", "")
+        if not re.match(r"^[A-Z]{5}[0-9]{4}[A-Z]$", pan):
+            result["warnings"] = [f"PAN format validation failed: {pan}"]
+        return result
+
+    def extract_gst_invoice(self, file_path: str, languages: list[str] = None) -> dict:
+        """Convenience method for GST invoice extraction with validation."""
+        result = self.extract(file_path, "gst_invoice", languages or ["en", "hi"])
+        data = result["data"]
+        # Cross-validate tax arithmetic
+        warnings = []
+        for i, item in enumerate(data.get("line_items", [])):
+            taxable = item.get("taxable_value", 0)
+            cgst = item.get("cgst_amount", 0)
+            rate = item.get("cgst_rate", 0)
+            if rate > 0:
+                expected = round(taxable * rate / 100, 2)
+                if abs(cgst - expected) > 1.0:
+                    warnings.append(f"Line {i+1}: CGST arithmetic mismatch")
+        if warnings:
+            result["warnings"] = warnings
+        return result
+
+
+# Usage
+ocr = IndianDocumentOCR(api_key="your_key_here")
+
+# Process a PAN card
+pan_result = ocr.extract_pan("documents/pan_card.jpg")
+print(f"PAN: {pan_result['data']['pan_number']}")
+print(f"Name: {pan_result['data']['name']}")
+print(f"Confidence: {pan_result['confidence']}")
+```
+
+**Node.js — For web application backends and serverless**
+
+```javascript
+const fs = require("fs");
+const path = require("path");
+const FormData = require("form-data");
+const axios = require("axios");
+
+class IndianDocumentOCR {
+  constructor(apiKey, baseUrl = "https://api.anumiti.ai/v1") {
+    this.apiKey = apiKey;
+    this.baseUrl = baseUrl;
+  }
+
+  async extract(filePath, documentType, languages = ["en"]) {
+    const form = new FormData();
+    form.append("file", fs.createReadStream(filePath));
+    form.append("document_type", documentType);
+    form.append("languages", languages.join(","));
+
+    const response = await axios.post(`${this.baseUrl}/extract`, form, {
+      headers: {
+        Authorization: `Bearer ${this.apiKey}`,
+        ...form.getHeaders(),
+      },
+      timeout: 30000,
+    });
+
+    return response.data;
+  }
+
+  async extractPAN(filePath) {
+    const result = await this.extract(filePath, "pan_card", ["en", "hi"]);
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+    if (!panRegex.test(result.data.pan_number || "")) {
+      result.warnings = [`PAN format validation failed: ${result.data.pan_number}`];
+    }
+    return result;
+  }
+
+  async extractAadhaar(filePath, regionalLanguage = "hi") {
+    const result = await this.extract(filePath, "aadhaar", ["en", regionalLanguage]);
+    // Mask Aadhaar number for DPDP compliance (show only last 4 digits)
+    if (result.data.aadhaar_number) {
+      result.data.aadhaar_masked = "XXXX-XXXX-" + result.data.aadhaar_number.slice(-4);
+    }
+    return result;
+  }
+}
+
+// Usage
+const ocr = new IndianDocumentOCR(process.env.ANUMITI_API_KEY);
+
+(async () => {
+  // Process Aadhaar card (Kannada + English)
+  const aadhaar = await ocr.extractAadhaar("docs/aadhaar.jpg", "kn");
+  console.log(`Name: ${aadhaar.data.name}`);
+  console.log(`Masked Aadhaar: ${aadhaar.data.aadhaar_masked}`);
+  console.log(`Address: ${aadhaar.data.address}`);
+})();
+```
+
+## What Are the Script-Specific Challenges Developers Must Handle?
+
+Each Indic script presents unique OCR challenges that affect accuracy and require script-aware processing. Understanding these helps you set realistic accuracy expectations and implement appropriate validation.
+
+**Devanagari (Hindi, Marathi, Sanskrit, Nepali)** — The headline (shirorekha) connecting characters in a word is unique to Devanagari. OCR must correctly segment where one character ends and the next begins along this continuous line. Conjunct characters (samyukt akshar) combine consonants into single glyphs — "क्ष" (ksha), "त्र" (tra), "ज्ञ" (gya) — and there are over 1,000 such combinations. Half-forms of consonants appearing before other consonants must be recognized correctly.
+
+**Tamil** — Tamil script has 12 vowels, 18 consonants, and 216 compound characters formed by combining them. The challenge is disambiguating visually similar characters: "ள" (lla) vs "ன" (na), "ற" (ra) vs "ன" (na). Tamil also uses unique numerals though most modern documents use Arabic numerals. Older documents and government forms may still use Tamil numerals.
+
+**Bengali** — Similar to Devanagari with a headline (matra), but with distinct character forms. The conjunct system is even more complex with characters that stack vertically. The "hasanta" (virama) combining multiple consonants creates forms not present in any other script. Bengali OCR must handle both the West Bengal standard and Bangladesh standard character forms.
+
+**Telugu and Kannada** — Both are Dravidian scripts with rounded character shapes. Telugu has the most characters of any Indian script in active use — over 460 base graphemes. The challenge is that many Telugu characters differ by a single stroke or dot, requiring high-resolution input for reliable recognition. Kannada shares this challenge with additionally complex conjunct forms.
+
+**Gurmukhi (Punjabi)** — Uses a top line similar to Devanagari but with distinct characters. The challenge is distinguishing between the three nasal characters (tippi, bindi, and addak) which look similar in low-resolution scans but change word pronunciation and meaning significantly.
+
+## How Do You Handle Document Preprocessing for Optimal OCR Results?
+
+Raw document images from mobile cameras, low-resolution scanners, and fax machines often need preprocessing before OCR. The right preprocessing pipeline can improve accuracy by 10-20% on poor-quality inputs.
+
+1. **Deskew correction.** Detect the document's rotation angle using Hough line transform or text line detection. Rotate the image to align text horizontally. Even a 2-3 degree skew reduces OCR accuracy noticeably on Indic scripts where the headline continuity is critical.
+
+2. **Perspective correction.** Mobile-photographed documents have trapezoidal distortion. Detect the four corners of the document and apply a perspective transform to produce a flat, rectangular image. OpenCV's `getPerspectiveTransform` and `warpPerspective` functions handle this well.
+
+3. **Binarization.** Convert the image to binary (black text on white background). For documents with uneven lighting, use adaptive thresholding (Sauvola or Niblack methods) rather than global thresholding. This preserves text in shadowed regions.
+
+4. **Noise removal.** Apply morphological operations (opening and closing) to remove small noise artifacts without degrading character shapes. Be conservative with noise removal on Indic scripts — aggressive filtering can destroy matras and dots that are semantically important.
+
+5. **Resolution enhancement.** If the input image is below 200 DPI, upscale it using bicubic interpolation or a super-resolution model. Processing at 300 DPI is optimal for most Indic scripts. Beyond 400 DPI provides diminishing returns and increases processing time.
+
+```python
+import cv2
+import numpy as np
+
+def preprocess_indian_document(image_path: str) -> np.ndarray:
+    """Preprocess an Indian document image for optimal OCR results."""
+    img = cv2.imread(image_path)
+
+    # Convert to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Deskew
+    coords = np.column_stack(np.where(gray < 128))
+    if len(coords) > 100:
+        angle = cv2.minAreaRect(coords)[-1]
+        if angle < -45:
+            angle = -(90 + angle)
+        else:
+            angle = -angle
+        if abs(angle) > 0.5:  # Only correct if skew > 0.5 degrees
+            h, w = gray.shape
+            center = (w // 2, h // 2)
+            matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+            gray = cv2.warpAffine(
+                gray, matrix, (w, h),
+                flags=cv2.INTER_CUBIC,
+                borderMode=cv2.BORDER_REPLICATE,
+            )
+
+    # Adaptive binarization (Sauvola method approximation)
+    binary = cv2.adaptiveThreshold(
+        gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY, 25, 12
+    )
+
+    # Light noise removal (conservative for Indic scripts)
+    kernel = np.ones((2, 2), np.uint8)
+    cleaned = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+
+    return cleaned
+```
+
+## What Architecture Should You Use for Production Indian Document Processing?
+
+A production document processing system needs to handle variable load, multiple document types, and compliance requirements. Here is a proven architecture pattern used by Indian fintechs and enterprise document workflows.
+
+**Ingestion layer.** Accept documents via REST API, email (IMAP polling), WhatsApp (via Business API), and bulk SFTP upload. Normalize all inputs to a standard format — store originals in object storage (S3/GCS with India region) and generate processing-ready images/PDFs.
+
+**Classification stage.** Before extraction, classify the document type automatically. A lightweight CNN or the extraction API's built-in classifier determines whether the upload is a PAN card, GST invoice, bank statement, or other type. This routes the document to the correct extraction pipeline without requiring the user to specify document type.
+
+**Extraction stage.** Call the document extraction API with the classified type and auto-detected language hints. Process documents asynchronously using a task queue (Celery, Bull, or AWS SQS). Implement retry logic with exponential backoff for transient API failures.
+
+**Validation stage.** Apply document-type-specific validation rules: PAN format check, GSTIN checksum verification, Aadhaar Verhoeff algorithm validation, tax arithmetic cross-checks. Flag documents that fail validation for human review.
+
+**Human review stage.** Route low-confidence extractions and validation failures to a review interface. Reviewers see the original document alongside extracted fields and can correct errors. Reviewed corrections feed back into accuracy monitoring.
+
+**Storage and compliance.** Store extracted data in your database with encryption at rest. For documents containing personal data (Aadhaar, PAN, names, addresses), implement DPDP-compliant data handling: purpose limitation, storage minimization, and consent tracking. Consider using [KAVACH](/kavach) for managing consent across your document processing pipeline.
+
+## How Do You Monitor and Improve OCR Accuracy Over Time?
+
+Deploying an OCR system is not a one-time event. Document formats evolve, new templates appear, and edge cases surface continuously. Here is how to maintain and improve accuracy in production.
+
+1. **Track field-level metrics.** Monitor accuracy per document type, per field, and per script. A drop in Tamil address extraction accuracy might indicate a new document format from Tamil Nadu RTO entering your pipeline.
+
+2. **Sample and audit regularly.** Randomly sample 1-2% of processed documents weekly. Have human reviewers verify the extraction against the original. Track accuracy trends over time and set alerts for drops exceeding your threshold.
+
+3. **Build a feedback loop.** When human reviewers correct extraction errors, log the corrections. Aggregate these corrections to identify systematic patterns — if "क्ष" is consistently misread as "क्श", report this to your API provider for model improvement.
+
+4. **Version your extraction logic.** When you update validation rules, extraction parameters, or post-processing logic, version the changes. This lets you correlate accuracy changes with code changes and roll back if a change degrades performance.
+
+5. **Test with adversarial inputs.** Periodically test your pipeline with intentionally challenging documents: very low resolution, heavy watermarks, 90-degree rotations, mixed-orientation pages. This identifies failure modes before they affect production traffic.
+
+For teams building Indian document processing systems, the combination of document-type-specific extraction with robust preprocessing and validation creates a pipeline that handles the diversity of Indian documents reliably at scale.

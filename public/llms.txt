@@ -1,0 +1,19 @@
+# Anumiti - India's AI Infrastructure for Compliance & Document Intelligence
+
+## About
+Anumiti (anumiti.com) provides two products:
+- KAVACH: DPDP compliance platform for Indian businesses
+- NETRA: Document intelligence API for Indian documents in 22 languages
+
+## Key Pages
+- Homepage: https://anumiti.com
+- KAVACH Product: https://anumiti.com/kavach
+- NETRA Product: https://anumiti.com/netra
+- DPDP Act Guide: https://anumiti.com/guides/dpdp-act-2023
+- DPDP Rules Guide: https://anumiti.com/guides/dpdp-rules-2025
+- Blog: https://anumiti.com/blog
+- API Playground: https://anumiti.com/playground
+
+## Contact
+Website: https://anumiti.com
+Email: hello@anumiti.com

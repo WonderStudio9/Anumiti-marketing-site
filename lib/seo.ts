@@ -41,6 +41,64 @@ export function generatePageMetadata({
   };
 }
 
+// --- Blog-specific metadata for AEO/GEO ---
+
+interface BlogSEO {
+  title: string;
+  description: string;
+  slug: string;
+  image?: string;
+  datePublished: string;
+  dateModified?: string;
+  author?: string;
+  tags?: string[];
+  category?: string;
+}
+
+export function generateBlogMetadata({
+  title,
+  description,
+  slug,
+  image,
+  datePublished,
+  dateModified,
+  author,
+  tags,
+  category,
+}: BlogSEO): Metadata {
+  const url = `${SITE_CONFIG.url}/blog/${slug}`;
+  const ogImage =
+    image ?? `${SITE_CONFIG.url}/api/og?title=${encodeURIComponent(title)}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    keywords: tags,
+    authors: author ? [{ name: author }] : [{ name: SITE_CONFIG.name }],
+    openGraph: {
+      title: `${title} | ${SITE_CONFIG.name}`,
+      description,
+      url,
+      siteName: SITE_CONFIG.name,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+      type: "article",
+      publishedTime: datePublished,
+      modifiedTime: dateModified ?? datePublished,
+      authors: author ? [author] : [SITE_CONFIG.name],
+      section: category,
+      tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${SITE_CONFIG.name}`,
+      description,
+      images: [ogImage],
+    },
+    robots: { index: true, follow: true },
+  };
+}
+
 // --- JSON-LD Schema Builders ---
 
 export function organizationSchema() {
@@ -156,6 +214,7 @@ interface ArticleSchemaInput {
   dateModified?: string;
   author?: string;
   image?: string;
+  keywords?: string[];
 }
 
 export function articleSchema(article: ArticleSchemaInput) {
@@ -167,16 +226,30 @@ export function articleSchema(article: ArticleSchemaInput) {
     url: article.url,
     datePublished: article.datePublished,
     dateModified: article.dateModified ?? article.datePublished,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": article.url,
+    },
     author: {
       "@type": "Organization",
       name: article.author ?? SITE_CONFIG.name,
+      url: SITE_CONFIG.url,
     },
     publisher: {
       "@type": "Organization",
       name: SITE_CONFIG.name,
-      logo: { "@type": "ImageObject", url: `${SITE_CONFIG.url}/images/logo.png` },
+      url: SITE_CONFIG.url,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_CONFIG.url}/images/logo.png`,
+      },
     },
     image: article.image,
+    keywords: article.keywords?.join(", "),
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["article h1", "article > div > p:first-of-type"],
+    },
   };
 }
 

@@ -1,0 +1,576 @@
+---
+title: "PAN Card Verification API: Complete Integration Guide for Indian Fintechs"
+description: "Integrate PAN card verification into your KYC flow — format validation, NSDL/UTI verification, RBI compliance, and production code samples in Python and Node.js."
+date: "2026-03-31"
+author: "Anumiti Team"
+category: "Tutorials"
+tags: ["PAN", "verification", "KYC", "fintech", "API", "NETRA"]
+image: "/og/pan-verification-api-integration.png"
+faqs:
+  - q: "What is the format of an Indian PAN number?"
+    a: "An Indian PAN (Permanent Account Number) is a 10-character alphanumeric identifier in the format ABCDE1234F. Characters 1-3 are alphabetic (AAA-ZZZ), character 4 indicates the holder type (C=Company, P=Person, H=HUF, etc.), character 5 is the first letter of the surname, characters 6-9 are sequential digits (0001-9999), and character 10 is an alphabetic check digit."
+  - q: "Is PAN verification mandatory for fintech KYC?"
+    a: "Yes. RBI's Master Direction on KYC (updated February 2025) mandates PAN verification as part of Customer Due Diligence (CDD) for all regulated entities including banks, NBFCs, payment aggregators, and fintech companies. PMLA Rules 2005 require PAN for transactions above specified thresholds."
+  - q: "How long does PAN verification take via API?"
+    a: "Real-time PAN verification typically returns results in 200-500ms. This includes format validation, NSDL/UTI database lookup, and name matching. For user-facing KYC flows, the entire verification step completes within the time it takes a user to move to the next form field."
+  - q: "Can I verify PAN cards in bulk?"
+    a: "Yes. Bulk PAN verification APIs accept CSV uploads or batch JSON requests with hundreds or thousands of PAN numbers. Processing rates of 500-1,000 verifications per minute are typical. This is used for periodic re-verification of existing customer databases and vendor onboarding drives."
+  - q: "What data does PAN verification return?"
+    a: "A full PAN verification returns: validity status, registered name, name match score (if you provide a name to match against), PAN holder type (Individual, Company, HUF, etc.), and whether the PAN is linked to Aadhaar (relevant for ITR filing compliance under Section 139AA of the Income Tax Act)."
+  - q: "How do I handle PAN-name mismatches?"
+    a: "PAN verification APIs return a name match score (0-100) comparing the name you provide against the NSDL-registered name. Use fuzzy matching thresholds: scores above 85 are typically accepted, 60-85 are flagged for manual review, and below 60 are rejected. Common mismatch causes: middle name variations, transliteration differences, and abbreviated initials."
+  - q: "What is the difference between PAN validation and PAN verification?"
+    a: "PAN validation checks the 10-character format offline — correct pattern, valid holder type code, valid check digit. PAN verification checks the PAN against the Income Tax Department's database via NSDL/UTI to confirm it exists, is active, and returns the registered holder name. Validation is free and instant; verification requires an API call."
+  - q: "Can a PAN number be deactivated?"
+    a: "Yes. PAN can be deactivated if a person holds multiple PANs (only one is allowed per Section 139A), if the PAN holder is deceased and the legal heir applies for deactivation, or if the PAN was obtained fraudulently. The Income Tax Department can also flag PANs as inoperative if not linked to Aadhaar by the prescribed deadline."
+  - q: "Is PAN verification sufficient for full KYC?"
+    a: "No. PAN verification is one component of KYC. RBI's Master Direction requires identity verification (PAN or other ID), address verification (Aadhaar, utility bill, or other proof), and for certain products, income verification. Video KYC (V-CIP) may also be required for digital onboarding. PAN verification establishes the customer's tax identity."
+  - q: "How do I handle PAN cards of minors?"
+    a: "Minors can have PAN cards (issued in the minor's name with a representative assessee). The PAN format is the same. For KYC purposes, verify both the minor's PAN and the guardian's PAN. The account must be operated by the guardian until the minor reaches 18, at which point re-KYC is required per RBI guidelines."
+---
+
+PAN (Permanent Account Number) verification is the cornerstone of customer identity verification for Indian financial services. Every bank account opening, loan application, insurance policy, mutual fund investment, and payment aggregator onboarding requires PAN verification — mandated by the RBI Master Direction on Know Your Customer (KYC), the Prevention of Money Laundering Act (PMLA) 2002, and Section 139A of the Income Tax Act 1961.
+
+For fintech companies building digital onboarding flows, PAN verification needs to be fast (sub-second), accurate (zero tolerance for false positives), and compliant (full audit trail). This guide covers everything from PAN format internals to production-ready API integration.
+
+## What Is the Structure of an Indian PAN Number?
+
+A Permanent Account Number is a 10-character alphanumeric identifier issued by the Income Tax Department through NSDL (National Securities Depository Limited) and UTI Infrastructure Technology and Services Limited (UTIITSL). Each character in the PAN carries specific meaning, making format validation a reliable first line of defense against invalid inputs.
+
+The structure follows a strict pattern: five letters, four digits, one letter. But within this structure, each position has defined rules that enable deeper validation.
+
+| Position | Character Type | Meaning | Valid Values | Example |
+|---|---|---|---|---|
+| 1 | Letter | Series (regional) | A-Z | A |
+| 2 | Letter | Series (regional) | A-Z | B |
+| 3 | Letter | Series (regional) | A-Z | C |
+| 4 | Letter | Holder type | C, P, H, F, A, T, B, L, J, G | P |
+| 5 | Letter | First letter of surname/entity name | A-Z | K |
+| 6-9 | Digits | Sequential number | 0001-9999 | 1234 |
+| 10 | Letter | Check digit | A-Z (computed) | F |
+
+**Position 4 — Holder type codes:**
+
+| Code | Holder Type | Example |
+|---|---|---|
+| P | Individual (Person) | Most common — personal PAN |
+| C | Company | Registered under Companies Act |
+| H | Hindu Undivided Family (HUF) | Joint family entity |
+| F | Firm (Partnership) | Registered partnerships |
+| A | Association of Persons (AOP) | Trusts, societies |
+| T | Trust | Charitable/religious trusts |
+| B | Body of Individuals (BOI) | Group without legal entity |
+| L | Local Authority | Municipal corporations, panchayats |
+| J | Artificial Juridical Person | Statutory bodies |
+| G | Government | Government departments |
+
+**Full example:** `ABCPK1234F`
+- Series: ABC (regional allocation by NSDL/UTI)
+- Holder type: P (Individual)
+- Surname initial: K (surname starts with K)
+- Sequence: 1234
+- Check digit: F
+
+The check digit at position 10 is computed by the Income Tax Department's systems. Unlike GSTIN's published Luhn mod 36 algorithm, the PAN check digit algorithm is not publicly documented. This means you cannot validate the check digit offline — you can only verify the overall format and confirm validity through the NSDL/UTI database.
+
+## Why Is PAN Verification Critical for Fintech Compliance?
+
+PAN verification is not optional for regulated financial entities. Multiple regulatory frameworks mandate it, and non-compliance carries significant penalties. Understanding these requirements helps you build verification flows that satisfy auditors and regulators.
+
+**RBI Master Direction on KYC (updated February 2025):** All Regulated Entities (REs) — banks, NBFCs, payment aggregators, payment banks, and cooperative banks — must perform Customer Due Diligence (CDD) before establishing a business relationship. PAN is a mandatory identifier for CDD. For accounts allowing transactions above ₹50,000, PAN verification must be completed before the account becomes operational.
+
+**PMLA Rules 2005 (as amended):** The Prevention of Money Laundering Rules require PAN verification for: cash transactions above ₹50,000, all wire transfers above ₹50,000, opening any bank account, and issuing demand drafts above ₹50,000. Non-compliance can result in penalties under Section 13 of PMLA — up to ₹25,000 for each failure, plus potential license action by the regulator.
+
+**Section 139A, Income Tax Act 1961:** Every person whose total income exceeds the basic exemption limit (₹3 lakh for FY 2025-26 under the new regime) must obtain a PAN. Section 206AA mandates TDS at higher rates (20% or the applicable rate, whichever is higher) if the payee does not furnish their PAN. This makes PAN verification essential for payroll systems, vendor payment platforms, and investment services.
+
+**Section 139AA — Aadhaar-PAN linking:** PAN becomes inoperative if not linked to Aadhaar by the prescribed deadline (extended multiple times, currently in effect). An inoperative PAN cannot be used for financial transactions. Your verification should check not just PAN validity but also its operative status.
+
+## How Do You Validate PAN Format Locally Before API Verification?
+
+Local format validation catches malformed inputs before they consume API quota. This is especially important in user-facing forms where typos are common.
+
+```python
+import re
+from typing import NamedTuple
+
+class PANValidationResult(NamedTuple):
+    is_valid: bool
+    error: str
+    holder_type: str
+    holder_type_name: str
+
+HOLDER_TYPES = {
+    "C": "Company",
+    "P": "Individual (Person)",
+    "H": "Hindu Undivided Family",
+    "F": "Firm (Partnership)",
+    "A": "Association of Persons",
+    "T": "Trust",
+    "B": "Body of Individuals",
+    "L": "Local Authority",
+    "J": "Artificial Juridical Person",
+    "G": "Government",
+}
+
+def validate_pan_format(pan: str) -> PANValidationResult:
+    """Validate PAN card number format offline.
+
+    Checks: length, character types, holder type code, and pattern.
+    Does NOT verify against NSDL/UTI database (use verify_pan for that).
+
+    Args:
+        pan: 10-character PAN number
+
+    Returns:
+        PANValidationResult with validity, error message, and holder type info
+    """
+    if not pan:
+        return PANValidationResult(False, "PAN is empty", "", "")
+
+    pan = pan.upper().strip()
+
+    if len(pan) != 10:
+        return PANValidationResult(
+            False, f"PAN must be 10 characters, got {len(pan)}", "", ""
+        )
+
+    # Full pattern: 5 letters + 4 digits + 1 letter
+    pattern = r"^[A-Z]{5}[0-9]{4}[A-Z]$"
+    if not re.match(pattern, pan):
+        return PANValidationResult(
+            False,
+            "PAN must match pattern: 5 letters, 4 digits, 1 letter (e.g., ABCPK1234F)",
+            "", "",
+        )
+
+    # Validate holder type (4th character)
+    holder_code = pan[3]
+    if holder_code not in HOLDER_TYPES:
+        return PANValidationResult(
+            False,
+            f"Invalid holder type code at position 4: '{holder_code}'. "
+            f"Valid codes: {', '.join(sorted(HOLDER_TYPES.keys()))}",
+            "", "",
+        )
+
+    # Validate sequence number is not all zeros
+    seq = pan[5:9]
+    if seq == "0000":
+        return PANValidationResult(False, "Sequence number cannot be 0000", "", "")
+
+    return PANValidationResult(
+        True,
+        "",
+        holder_code,
+        HOLDER_TYPES[holder_code],
+    )
+
+
+# Usage
+result = validate_pan_format("ABCPK1234F")
+print(f"Valid: {result.is_valid}")
+print(f"Holder type: {result.holder_type_name}")  # "Individual (Person)"
+
+result = validate_pan_format("ABCXK1234F")
+print(f"Valid: {result.is_valid}")
+print(f"Error: {result.error}")  # Invalid holder type code
+```
+
+**Node.js implementation:**
+
+```javascript
+const HOLDER_TYPES = {
+  C: "Company",
+  P: "Individual (Person)",
+  H: "Hindu Undivided Family",
+  F: "Firm (Partnership)",
+  A: "Association of Persons",
+  T: "Trust",
+  B: "Body of Individuals",
+  L: "Local Authority",
+  J: "Artificial Juridical Person",
+  G: "Government",
+};
+
+function validatePANFormat(pan) {
+  if (!pan) return { valid: false, error: "PAN is empty" };
+
+  pan = pan.toUpperCase().trim();
+
+  if (pan.length !== 10) {
+    return { valid: false, error: `PAN must be 10 characters, got ${pan.length}` };
+  }
+
+  const pattern = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+  if (!pattern.test(pan)) {
+    return { valid: false, error: "PAN must match pattern: ABCDE1234F" };
+  }
+
+  const holderCode = pan[3];
+  if (!HOLDER_TYPES[holderCode]) {
+    return { valid: false, error: `Invalid holder type: ${holderCode}` };
+  }
+
+  if (pan.substring(5, 9) === "0000") {
+    return { valid: false, error: "Sequence number cannot be 0000" };
+  }
+
+  return {
+    valid: true,
+    holderType: holderCode,
+    holderTypeName: HOLDER_TYPES[holderCode],
+  };
+}
+```
+
+## How Do You Verify PAN Against the NSDL Database via API?
+
+Format validation catches typos but cannot confirm whether a PAN actually exists, is active, and belongs to the claimed person. Real-time verification against the NSDL/UTI database provides this confirmation.
+
+The verification API call returns the registered name, PAN status (active, inactive, inoperative), and optionally a name match score if you provide a name to compare against.
+
+**cURL — Quick verification**
+
+```bash
+curl -X POST "https://api.anumiti.ai/v1/pan/verify" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "pan": "ABCPK1234F",
+    "name_to_match": "Rajesh Kumar",
+    "consent": "Y",
+    "consent_purpose": "KYC verification for account opening"
+  }'
+```
+
+The `consent` and `consent_purpose` fields are required for compliance. Under DPDP Act 2023, you must have the data principal's consent before verifying their PAN. The API logs this consent declaration as part of the audit trail.
+
+**Python — Full integration with retry logic and name matching**
+
+```python
+import requests
+import time
+from dataclasses import dataclass
+from typing import Optional
+
+@dataclass
+class PANVerificationResult:
+    verified: bool
+    pan: str
+    status: str  # "active", "inactive", "inoperative", "not_found"
+    registered_name: Optional[str]
+    name_match_score: Optional[int]  # 0-100
+    holder_type: str
+    aadhaar_linked: Optional[bool]
+    error: Optional[str] = None
+
+class PANVerifier:
+    """PAN verification client with retry logic and name matching."""
+
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.base_url = "https://api.anumiti.ai/v1/pan"
+        self.session = requests.Session()
+        self.session.headers.update({
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        })
+
+    def verify(
+        self,
+        pan: str,
+        name_to_match: Optional[str] = None,
+        consent_purpose: str = "KYC verification",
+        max_retries: int = 3,
+    ) -> PANVerificationResult:
+        """Verify PAN against NSDL database with optional name matching.
+
+        Args:
+            pan: 10-character PAN number
+            name_to_match: Name to compare against registered name (optional)
+            consent_purpose: Purpose of verification (logged for compliance)
+            max_retries: Number of retry attempts for transient failures
+
+        Returns:
+            PANVerificationResult with full verification details
+        """
+        # Format validation first
+        format_result = validate_pan_format(pan)
+        if not format_result.is_valid:
+            return PANVerificationResult(
+                verified=False,
+                pan=pan,
+                status="format_error",
+                registered_name=None,
+                name_match_score=None,
+                holder_type="",
+                aadhaar_linked=None,
+                error=format_result.error,
+            )
+
+        payload = {
+            "pan": pan.upper().strip(),
+            "consent": "Y",
+            "consent_purpose": consent_purpose,
+        }
+        if name_to_match:
+            payload["name_to_match"] = name_to_match
+
+        # Retry with exponential backoff
+        for attempt in range(max_retries):
+            try:
+                response = self.session.post(
+                    f"{self.base_url}/verify",
+                    json=payload,
+                    timeout=10,
+                )
+                response.raise_for_status()
+                data = response.json()["data"]
+
+                return PANVerificationResult(
+                    verified=data["status"] == "active",
+                    pan=pan.upper(),
+                    status=data["status"],
+                    registered_name=data.get("registered_name"),
+                    name_match_score=data.get("name_match_score"),
+                    holder_type=data.get("holder_type", ""),
+                    aadhaar_linked=data.get("aadhaar_linked"),
+                )
+
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 429:
+                    # Rate limited — wait and retry
+                    wait = 2 ** attempt
+                    time.sleep(wait)
+                    continue
+                elif e.response.status_code == 404:
+                    return PANVerificationResult(
+                        verified=False, pan=pan, status="not_found",
+                        registered_name=None, name_match_score=None,
+                        holder_type="", aadhaar_linked=None,
+                        error="PAN not found in NSDL database",
+                    )
+                raise
+            except requests.exceptions.Timeout:
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** attempt)
+                    continue
+                return PANVerificationResult(
+                    verified=False, pan=pan, status="timeout",
+                    registered_name=None, name_match_score=None,
+                    holder_type="", aadhaar_linked=None,
+                    error="Verification timed out after retries",
+                )
+
+    def verify_with_name_check(
+        self,
+        pan: str,
+        expected_name: str,
+        min_match_score: int = 85,
+    ) -> tuple[PANVerificationResult, bool]:
+        """Verify PAN and check if the name matches.
+
+        Returns:
+            Tuple of (verification_result, name_matches)
+        """
+        result = self.verify(pan, name_to_match=expected_name)
+
+        if not result.verified:
+            return result, False
+
+        name_matches = (
+            result.name_match_score is not None
+            and result.name_match_score >= min_match_score
+        )
+
+        return result, name_matches
+
+
+# Usage
+verifier = PANVerifier(api_key="your_key_here")
+
+# Simple verification
+result = verifier.verify("ABCPK1234F")
+print(f"Status: {result.status}")
+print(f"Name: {result.registered_name}")
+
+# Verification with name matching (for KYC)
+result, name_ok = verifier.verify_with_name_check(
+    pan="ABCPK1234F",
+    expected_name="Rajesh Kumar",
+    min_match_score=85,
+)
+print(f"PAN active: {result.verified}")
+print(f"Name match score: {result.name_match_score}")
+print(f"Name accepted: {name_ok}")
+```
+
+## How Do You Handle PAN Name Matching in KYC Flows?
+
+Name matching is where most PAN verification integrations encounter edge cases. The name provided by the customer often does not exactly match the name registered with the Income Tax Department, even when they refer to the same person.
+
+Common mismatch sources include: middle name presence or absence ("Rajesh Kumar" vs "Rajesh Mohan Kumar"), initial expansion ("R. Kumar" vs "Rajesh Kumar"), transliteration variations ("Priya" vs "Priyaa"), title inclusion ("Dr. Anita Sharma" vs "Anita Sharma"), and married name changes not updated with the IT department.
+
+A robust name matching strategy uses three tiers:
+
+1. **Exact match (score 95-100).** Names match after normalization (case folding, whitespace trimming, removing common titles). Accept automatically.
+
+2. **Fuzzy match (score 70-94).** Names are similar but not identical. Common in cases of middle name presence, initial variations, or minor spelling differences. Apply configurable thresholds — most fintechs accept scores above 80-85 for standard KYC, with lower thresholds (70-80) flagged for manual review.
+
+3. **Low match (score below 70).** Significant discrepancy between provided and registered names. This could indicate a data entry error, a name change not reflected in PAN records, or a fraudulent attempt. Route to manual review with the customer asked to provide additional documentation.
+
+```python
+def evaluate_pan_name_match(
+    score: int,
+    holder_type: str,
+    transaction_type: str,
+) -> dict:
+    """Evaluate PAN name match score and return action recommendation.
+
+    Args:
+        score: Name match score (0-100) from verification API
+        holder_type: PAN holder type (P, C, H, etc.)
+        transaction_type: "account_opening", "loan", "insurance", "payment"
+
+    Returns:
+        Dict with action, reason, and whether manual review is needed
+    """
+    # Higher thresholds for high-risk transactions
+    threshold_map = {
+        "account_opening": {"auto_accept": 85, "review": 65},
+        "loan": {"auto_accept": 90, "review": 70},
+        "insurance": {"auto_accept": 85, "review": 60},
+        "payment": {"auto_accept": 80, "review": 55},
+    }
+
+    thresholds = threshold_map.get(
+        transaction_type,
+        {"auto_accept": 85, "review": 65},
+    )
+
+    if score >= thresholds["auto_accept"]:
+        return {
+            "action": "accept",
+            "reason": f"Name match score {score} exceeds threshold {thresholds['auto_accept']}",
+            "manual_review": False,
+        }
+    elif score >= thresholds["review"]:
+        return {
+            "action": "review",
+            "reason": f"Name match score {score} is between review ({thresholds['review']}) "
+                      f"and auto-accept ({thresholds['auto_accept']}) thresholds",
+            "manual_review": True,
+        }
+    else:
+        return {
+            "action": "reject",
+            "reason": f"Name match score {score} is below review threshold {thresholds['review']}",
+            "manual_review": True,
+        }
+```
+
+## What Are the Production Deployment Patterns for PAN Verification?
+
+Deploying PAN verification in production requires attention to rate limiting, audit logging, consent management, and failover handling. Here are the patterns used by Indian fintechs processing thousands of KYC verifications daily.
+
+**Pattern 1: Synchronous verification in onboarding flow.** For real-time user onboarding (mobile app, web form), call the PAN verification API synchronously after the user enters their PAN. Display results inline — green checkmark for verified, yellow warning for name mismatch, red error for invalid/inactive PAN. Keep the verification call under 1 second to maintain UX quality.
+
+**Pattern 2: Async batch verification for existing customers.** For periodic re-verification of existing customer PAN records (recommended quarterly per RBI risk management guidelines), use the bulk verification API. Submit CSV batches during off-peak hours. Process results asynchronously — flag customers whose PAN status has changed (active to inoperative, or name change detected) for re-KYC.
+
+**Pattern 3: Verification with OCR for document upload flows.** When customers upload a PAN card image instead of typing the number, combine OCR extraction with verification in a single pipeline. Extract the PAN number and name from the image using [NETRA's PAN extraction](/netra/fintech), then verify the extracted PAN against NSDL and cross-check the extracted name against the application form name. This catches both fraudulent PAN cards (fake/edited images) and data entry mismatches.
+
+**Pattern 4: Event-driven verification for transaction monitoring.** For payment platforms processing vendor payments, trigger PAN re-verification when a transaction exceeds ₹50,000 (PMLA threshold) or when the system detects unusual patterns. Use an event bus (Kafka, RabbitMQ) to decouple verification from the transaction flow, processing verifications asynchronously while logging the verification status for audit.
+
+## How Do You Maintain Compliance Audit Trails for PAN Verification?
+
+Regulated entities must maintain detailed records of all KYC verifications. RBI inspectors and CAG auditors expect to see a complete trail of when, why, and how each PAN was verified.
+
+Your audit log for each PAN verification should capture:
+
+1. **Verification timestamp** — exact date and time of the API call (store in UTC with IST offset)
+2. **PAN number** — the number verified (store encrypted at rest)
+3. **Verification result** — status returned (active, inactive, inoperative, not_found)
+4. **Name match details** — provided name, match score, accept/review/reject decision
+5. **Consent record** — how and when the customer consented to PAN verification
+6. **Purpose** — which business process triggered the verification (account opening, loan application, etc.)
+7. **Operator/system** — which user or automated system initiated the verification
+8. **API response hash** — cryptographic hash of the full API response for tamper detection
+
+```python
+import hashlib
+import json
+from datetime import datetime, timezone, timedelta
+
+IST = timezone(timedelta(hours=5, minutes=30))
+
+def create_pan_audit_record(
+    pan: str,
+    verification_result: dict,
+    purpose: str,
+    initiated_by: str,
+    consent_timestamp: str,
+) -> dict:
+    """Create a compliance audit record for PAN verification."""
+    now = datetime.now(IST)
+
+    # Hash the full API response for tamper detection
+    response_hash = hashlib.sha256(
+        json.dumps(verification_result, sort_keys=True).encode()
+    ).hexdigest()
+
+    return {
+        "verification_id": f"PAN-{now.strftime('%Y%m%d%H%M%S')}-{pan[-4:]}",
+        "timestamp_utc": now.astimezone(timezone.utc).isoformat(),
+        "timestamp_ist": now.isoformat(),
+        "pan_last_four": pan[-4:],  # Store only last 4 for log readability
+        "pan_encrypted": encrypt_pan(pan),  # Full PAN encrypted
+        "verification_status": verification_result.get("status"),
+        "name_match_score": verification_result.get("name_match_score"),
+        "name_match_decision": verification_result.get("decision"),
+        "purpose": purpose,
+        "initiated_by": initiated_by,
+        "consent_timestamp": consent_timestamp,
+        "api_response_hash": response_hash,
+        "retention_until": (now + timedelta(days=365 * 8)).isoformat(),  # 8-year retention
+    }
+```
+
+Under RBI's Master Direction, KYC records must be maintained for a period of five years after the business relationship has ended. Many institutions retain for eight years to align with the Income Tax assessment timeline (Section 149 allows reassessment for up to 10 years in case of concealment). Store audit records in an append-only database or immutable log to prevent tampering.
+
+## What Are Common PAN Verification Integration Mistakes?
+
+Teams building PAN verification for the first time commonly make these mistakes. Addressing them upfront prevents compliance issues and production incidents.
+
+**Mistake 1: Not storing consent proof.** Every PAN verification processes personal data under DPDP Act. You need documented proof that the data principal consented to the verification, including the timestamp, method of consent (click, signature, verbal), and specific purpose. Store this separately from the verification result, linked by a consent ID.
+
+**Mistake 2: Storing PAN numbers in plaintext.** PAN is sensitive personal data. Store it encrypted at rest using AES-256 or equivalent. In logs, display only the last four characters. In UIs, mask as `XXXXXX1234F`. Never include full PAN numbers in URLs, query parameters, or unencrypted logs.
+
+**Mistake 3: Ignoring the inoperative PAN status.** Since the Aadhaar-PAN linking mandate, millions of PANs have become inoperative. An inoperative PAN will pass format validation and may even return a name from the database, but it cannot be used for financial transactions. Always check the operative/inoperative status alongside basic active/inactive.
+
+**Mistake 4: Using exact name matching.** Indian names have enormous variation in how they appear on PAN versus other documents. Exact string matching rejects legitimate customers. Always use fuzzy matching with configurable thresholds appropriate to your risk profile.
+
+**Mistake 5: No fallback for API downtime.** PAN verification APIs depend on NSDL/UTI backend systems that occasionally have maintenance windows or outages. Build a fallback path: accept the PAN provisionally with format validation, flag it for verification when the service recovers, and apply temporary transaction limits until verification completes.
+
+**Mistake 6: Not re-verifying periodically.** PAN status changes over time — cancellation, deactivation, inoperative status. A PAN verified at account opening may be invalid six months later. Implement periodic re-verification (quarterly recommended) for active business relationships, especially for lending and insurance products.
+
+## How Do You Get Started with PAN Verification Today?
+
+Integrating PAN verification into your application follows this sequence:
+
+1. **Implement local format validation** using the code samples above. Deploy this as frontend validation in your forms to catch typos immediately.
+
+2. **Obtain API credentials** from your verification provider's developer dashboard.
+
+3. **Build the verification call** using the Python or Node.js samples. Start with simple verification (PAN + consent), then add name matching.
+
+4. **Implement the name matching logic** with configurable thresholds. Start with an 85% auto-accept threshold and a 65% review threshold, then adjust based on your false positive/negative rates.
+
+5. **Set up the audit logging** pipeline. Every verification must be logged with full context for regulatory compliance.
+
+6. **Test with edge cases** — expired PANs, inoperative PANs, name mismatches, rate limit scenarios, and API timeout handling.
+
+7. **Deploy with monitoring** — track verification success rates, average name match scores, API latency, and error rates. Alert on anomalies.
+
+8. **Configure periodic re-verification** for your existing customer base. Start with a quarterly cycle and adjust frequency based on your risk assessment.
+
+For fintechs building comprehensive KYC workflows, PAN verification is just the first step. Combine it with GSTIN verification for business customers using the [GSTIN lookup tool](/tools/gstin-lookup), and document extraction for PAN card images via [NETRA's fintech-focused API](/netra/fintech) to build a complete identity verification pipeline.

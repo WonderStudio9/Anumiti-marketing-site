@@ -8,11 +8,13 @@ export interface PostMeta {
   title: string;
   description: string;
   date: string;
+  dateModified?: string;
   author: string;
   category: string;
   tags: string[];
   image?: string;
   draft?: boolean;
+  faqs?: { question: string; answer: string }[];
 }
 
 export interface Post {
