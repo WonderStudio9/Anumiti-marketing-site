@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -15,17 +17,11 @@ import { ComparisonTable } from "@/components/marketing/comparison-table";
 import { Badge } from "@/components/marketing/badge";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
-import { generatePageMetadata, productSchema } from "@/lib/seo";
+import { productSchema } from "@/lib/seo";
 import { SITE_CONFIG, CTA_URLS, PRODUCTS } from "@/lib/constants";
 import { NETRA_FEATURES, NETRA_USE_CASES, SUPPORTED_DOCUMENTS } from "@/data/features";
 import { CodeTabs } from "./code-tabs";
 
-export const metadata = generatePageMetadata({
-  title: "NETRA — Document Intelligence API for Every Indian Document & Language",
-  description:
-    "NETRA is India's document intelligence API. Extract structured data from 50+ Indian document types in 22 languages. Sub-100ms latency. 94% accuracy. GSTIN verification built-in. Free tier available.",
-  path: "/netra",
-});
 
 const DEMO_CURL = `curl -X POST https://api.anumiti.com/v1/extract \\
   -H "Authorization: Bearer YOUR_API_KEY" \\

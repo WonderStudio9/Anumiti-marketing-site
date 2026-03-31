@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -15,17 +17,11 @@ import { ComparisonTable } from "@/components/marketing/comparison-table";
 import { Badge } from "@/components/marketing/badge";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
-import { generatePageMetadata, productSchema } from "@/lib/seo";
+import { productSchema } from "@/lib/seo";
 import { SITE_CONFIG, CTA_URLS, PRODUCTS, daysUntilPhase3 } from "@/lib/constants";
 import { KAVACH_FEATURES, KAVACH_USE_CASES } from "@/data/features";
 import { KAVACH_PRICING } from "@/data/pricing";
 
-export const metadata = generatePageMetadata({
-  title: "KAVACH — DPDP Compliance & AI Governance for Indian Businesses",
-  description:
-    "KAVACH is India-first DPDP compliance software. Consent management in 22 languages, WhatsApp consent flows, AI model auditing, DPIA generation, and breach notification. Start free.",
-  path: "/kavach",
-});
 
 export default function KavachPage() {
   const daysLeft = daysUntilPhase3();
