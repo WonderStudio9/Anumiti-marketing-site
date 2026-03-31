@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GitBranch, Globe, MessageCircle } from "lucide-react";
 import { SITE_CONFIG, FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/constants";
+import { AnumitiLogo } from "@/components/brand/anumiti-logo";
 
 export function Footer() {
   return (
@@ -87,9 +88,13 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-8 md:flex-row">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold">{SITE_CONFIG.name}</span>
-            <span className="text-xs text-gray-500">{SITE_CONFIG.nameHindi}</span>
+          <div className="flex items-center">
+            <AnumitiLogo
+              size={32}
+              variant="footer"
+              animated={false}
+              theme="dark"
+            />
           </div>
 
           <p className="text-sm text-gray-500">

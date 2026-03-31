@@ -6,6 +6,7 @@ import { Menu, X, ChevronDown, Shield, Eye } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NAV_ITEMS, CTA_URLS, SITE_CONFIG } from "@/lib/constants";
 import { CTAButton } from "@/components/marketing/cta-button";
+import { AnumitiLogo } from "@/components/brand/anumiti-logo";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -33,23 +34,13 @@ export function Header() {
 
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <motion.span
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className={`text-xl font-bold tracking-tight ${
-              scrolled ? "text-navy" : "text-white"
-            }`}
-          >
-            {SITE_CONFIG.name}
-          </motion.span>
-          <span
-            className={`text-xs font-medium ${
-              scrolled ? "text-gray-400" : "text-white/60"
-            }`}
-          >
-            {SITE_CONFIG.nameHindi}
-          </span>
+        <Link href="/" className="flex items-center">
+          <AnumitiLogo
+            size={36}
+            variant="full"
+            animated={false}
+            theme={scrolled ? "light" : "dark"}
+          />
         </Link>
 
         {/* Desktop Nav */}
